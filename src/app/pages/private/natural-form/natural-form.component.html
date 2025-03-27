@@ -10,6 +10,16 @@
 
         <form action="">
             <app-subtitle [subtitle]="'DOCUMENTOS PRECARGADOS'"></app-subtitle>
+            <div class="row">
+              <app-select-input
+                [label]="'Orden de compra'"
+                [control]="getControl('purchaseOrder')"
+                [options]="[]"
+                [optionName]="'optionName'"
+                [optionValue]="'optionValue'"
+                class="col-6"
+              ></app-select-input>
+            </div>
             <!-- OC FORM -->
             <div class="row">
                 <app-text-input

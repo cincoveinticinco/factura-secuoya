@@ -1,7 +1,7 @@
 import { Component } from '@angular/core';
 import { FormControl, FormGroup, Validators } from '@angular/forms';
 import { FormBase } from '../../../bases/form-base';
-import { FileboxComponent, LogoComponent, OrdersTableComponent, SubtitleComponent, TextInputComponent } from '../../../components';
+import { FileboxComponent, LogoComponent, OrdersTableComponent, SelectInputComponent, SubtitleComponent, TextInputComponent } from '../../../components';
 
 @Component({
   selector: 'app-juridical-form',
@@ -10,7 +10,8 @@ import { FileboxComponent, LogoComponent, OrdersTableComponent, SubtitleComponen
     SubtitleComponent,
     TextInputComponent,
     FileboxComponent,
-    OrdersTableComponent
+    OrdersTableComponent,
+    SelectInputComponent
   ],
   templateUrl: './juridical-form.component.html',
   styleUrl: './juridical-form.component.scss'
@@ -21,6 +22,7 @@ export class JuridicalFormComponent extends FormBase {
 
   constructor() {
     const form = new FormGroup({
+      purchaseOrder: new FormControl({value:'', disabled: true}, Validators.required),
       personType: new FormControl({value:'', disabled: true}, Validators.required),
       documentType: new FormControl({value:'', disabled: true}, Validators.required),
       documentNumber: new FormControl({value:'', disabled: true}, Validators.required),

@@ -1,5 +1,5 @@
 import { Component } from '@angular/core';
-import { LogoComponent, TextInputComponent, OrdersTableComponent, FileboxComponent, SubtitleComponent } from '../../../components';
+import { LogoComponent, TextInputComponent, OrdersTableComponent, FileboxComponent, SubtitleComponent, SelectInputComponent } from '../../../components';
 import { FormBase } from '../../../bases/form-base';
 import { FormControl, FormGroup, Validators } from '@angular/forms';
 
@@ -10,7 +10,8 @@ import { FormControl, FormGroup, Validators } from '@angular/forms';
     SubtitleComponent,
     TextInputComponent,
     FileboxComponent,
-    OrdersTableComponent
+    OrdersTableComponent,
+    SelectInputComponent
   ],
   templateUrl: './natural-form.component.html',
   styleUrl: './natural-form.component.scss'
@@ -21,6 +22,7 @@ export class NaturalFormComponent extends FormBase {
 
   constructor() {
     const form = new FormGroup({
+      purchaseOrder: new FormControl({value:'', disabled: true}, Validators.required),
       personType: new FormControl({value:'', disabled: true}, Validators.required),
       documentType: new FormControl({value:'', disabled: true}, Validators.required),
       documentNumber: new FormControl({value:'', disabled: true}, Validators.required),
