@@ -1,0 +1,26 @@
+<div class="input-container">
+    <label>{{ label }}</label>
+    @if(control.errors && (control.dirty || control.touched)) {
+      <small class="error">
+        {{
+          getErrors()
+        }}
+      </small>
+    } 
+    @if(!getErrors() && description){
+      <small class="description">
+        {{ description }}
+      </small>
+    }
+    <select
+      [formControl]="control"
+      (ngModelChange)="onChange($event)"
+        name="regimen_fiscal">
+        <option disabled value="">SELECCIONE UNA OPCION</option>
+        @for (opt of options; track opt) {
+            <option [value]="opt[(optionValue)]">{{opt[(optionName)]}}</option>
+        } @empty {
+            <option disabled>No hay opciones para mostrar</option>
+        }
+    </select>
+  </div>

@@ -1,0 +1,69 @@
+@if (loading) {
+    <div class="loader">
+      <div class="custom-loader"></div>
+    </div>
+} @else {
+    <div class="invoice-login-container">
+        <div class="invoice-login-header">
+          <app-logo></app-logo>
+          <h1>BIENVENIDO AL MODULO DE RADICACIÓN</h1>
+          <p>En esta plataforma podrá radicar de manera fácil y segura los documentos y facturas correspondientes.</p>
+        </div>
+        <div class="invoice-login-tabs-container">
+          <mat-tab-group mat-stretch-tabs="false" mat-align-tabs="start" class="mat-tabs-group" (selectedTabChange)="onTabChange($event)">
+            <mat-tab>
+              <ng-template mat-tab-label>
+                <span class="mat-tab">Persona Natural</span>
+              </ng-template>
+            </mat-tab>
+            <mat-tab>
+              <ng-template mat-tab-label>
+                <span class="mat-tab">Persona Jurídica</span>
+              </ng-template>
+            </mat-tab>
+          </mat-tab-group>
+          <form [formGroup]="parentForm" (ngSubmit)="save()" class="row align-end" id="invoice-login-form">
+            <app-select-input
+              [label]="'Tipo de documento'"
+              [control]="getControl('documentType')"
+              [options]="filteredDocumentTypes"
+              [optionName]="'optionName'"
+              [optionValue]="'optionValue'"
+              class="col-12"
+            ></app-select-input>
+            <app-text-input
+              [label]="'Número de documento'"
+              [control]="getControl('documentNumber')"
+              [type]="'text'"
+              [pattern]="getDocumentPattern()"
+              class="col-12"
+            ></app-text-input>
+            <app-select-input
+              [label]="'Tipo de solicitud'"
+              [control]="getControl('requestType')"
+              [options]="formattedRequestTypes"
+              [optionName]="'optionName'"
+              [optionValue]="'optionValue'"
+              class="col-12"
+            ></app-select-input>
+            <p class="col-1 justify-end">
+              @if (getControl('requestType').value == 1) {
+                <b>OC-</b>
+              } @else {
+                <b>ADV-</b>
+              }
+            </p>
+            <app-text-input
+              [label]="'Número de orden'"
+              [control]="getControl('orderNumber')"
+              class="col-11"
+            ></app-text-input>
+          </form>
+        </div>
+        <div class="invoice-login-footer">
+          <p>¿Necesita recibir el número de orden? <a>Click aquí.</a></p>
+          <!-- <p>¿Necesita recibir el número de orden? <a (click)="receivePurchaseOrders()">Click aquí.</a></p> -->
+          <button mat-raised-button color="primary" class="btn-red" form="invoice-login-form" type="submit">INGRESAR</button>
+        </div>
+      </div>
+}

@@ -1,0 +1,65 @@
+.invoice-login-container {
+    width: 700px;
+    margin: auto;
+    position: absolute;
+    top: 50%;
+    left: 50%;
+    transform: translate(-50%, -50%);
+  
+    .invoice-login-header {
+      text-align: center;
+  
+      p {
+        text-align: center;
+      }
+    }
+  
+    .invoice-login-tabs-container {
+      width: 400px;
+      margin: auto;
+      margin-top: 3rem;
+    }
+  
+    .invoice-login-footer {
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      justify-content: center;
+      margin-top: 3rem;
+  
+      .btn-red {
+        width: 400px;
+        border-radius: 12px;
+      }
+    }
+  
+    .error-container {
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      justify-content: center;
+      margin-top: 3rem;
+  
+      .error-message {
+        color: red;
+        font-size: 12px;
+      }
+    }
+  }
+  
+  @media (max-width: 768px) {
+    .invoice-login-container {
+      width: 100%;
+      padding: 0 1rem;
+  
+      .invoice-login-tabs-container {
+        width: 100%;
+      }
+  
+      .invoice-login-footer {
+        .btn-red {
+          width: 100%;
+        }
+      }
+    }
+  }

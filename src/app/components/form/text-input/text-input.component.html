@@ -1,0 +1,53 @@
+<div class="input-container">
+    <label>{{ label }}</label>
+    @if(control.errors && (control.dirty || control.touched)) {
+      <small class="error">
+        {{ getErrors() }}
+      </small>
+    }
+    @if(!getErrors() && description){
+      <small class="description">
+        {{ description }}
+      </small>
+    }
+  
+    @if (type == 'currency') {
+      <input
+        [placeholder]="placeholder"
+        [formControl]="control"
+        type="text"
+        mask="separator.0"
+        prefix="$"
+        [allowNegativeNumbers]="true"
+        thousandSeparator="."
+      />
+    } @else if(type === 'tel') {
+      <input
+        [placeholder]="placeholder"
+        [formControl]="control"
+        type="tel"
+        mask="000 000 0000"
+        [showMaskTyped]="true"
+        [dropSpecialCharacters]="false"
+        (blur)="blur()"
+      />
+    } @else if(type === 'number') {
+      <input
+        [placeholder]="placeholder"
+        [formControl]="control"
+        type="number"
+        [pattern]="pattern || '[0-9]*'"
+        inputmode="numeric"
+        (blur)="blur()"
+        (keypress)="onlyNumbers($event)"
+      />
+    } @else {
+      <input
+        [placeholder]="placeholder"
+        [formControl]="control"
+        [type]="type"
+        [pattern]="pattern || ''"
+        (blur)="blur()"
+      />
+    }
+  </div>
