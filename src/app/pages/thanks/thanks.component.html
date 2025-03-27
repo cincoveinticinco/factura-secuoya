@@ -1,1 +1,15 @@
-<p>thanks works!</p>
+<div class="center-content">
+    @if (!loading) {
+      <div class="content full-width">
+        <app-logo></app-logo>
+        <h2></h2>
+        <p class="align-center">
+           Gracias por realizar la carga de documentos.
+        </p>
+      </div>
+    } @else {
+      <div class="loader">
+          <div class="custom-loader"></div>
+      </div>
+  }
+</div>

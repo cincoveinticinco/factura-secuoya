@@ -1,0 +1,28 @@
+.oc-info-error-container {
+    position: absolute;
+    top: 50%;
+    left: 50%;
+    transform: translate(-50%, -50%);
+    width: auto;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+  
+    h1 {
+      color: #F57E77;
+    }
+  
+    .customized-loader {
+      height: 90px;
+      width: 90px;
+      border-radius: 100%;
+      background-color: #FCF3F2;
+      display: flex;
+      justify-content: center;
+      align-items: center;
+    }
+  
+    .support-info {
+      margin-top: 3rem;
+    }
+  }
