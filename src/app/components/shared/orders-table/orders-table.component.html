@@ -1,0 +1,67 @@
+<div class="row">
+    <table class="col-12">
+      <tr>
+        <th>
+          # de Orden
+        </th>
+        <th>
+          Descripción
+        </th>
+        <th>
+          IVA
+        </th>
+        <th>
+          Retención
+        </th>
+        <th>
+          Vr. Día
+        </th>
+        <th>
+          Vr. Total
+        </th>
+      </tr>
+      <!-- should iterate in selectedOrders -->
+      <tr>
+        <td>
+          0
+        </td>
+        <td>
+          0
+        </td>
+        <td>
+          {{ fromNumberToCop(0) }}
+        </td>
+        <td>
+          {{ fromNumberToCop(0) }}
+        </td>
+        <td>
+          {{ fromNumberToCop(0) }}
+        </td>
+        <td>
+          {{ fromNumberToCop(0) }}
+        </td>
+      </tr>
+      <!-- @for( order of getProjectionsForSelectedOrders(); track order) {
+        <tr>
+          <td>
+            {{ order.consecutive_code }}
+          </td>
+          <td>
+            {{ order.description }}
+          </td>
+          <td>
+            {{ fromNumberToCop(order.taxes_addition_value) }}
+          </td>
+          <td>
+            {{ fromNumberToCop(order.taxes_not_addition_value) }}
+          </td>
+          <td>
+            {{ fromNumberToCop(order.value) }}
+          </td>
+          <td>
+            {{ fromNumberToCop(order.total) }}
+          </td>
+        </tr>
+      } -->
+    </table>
+  </div>

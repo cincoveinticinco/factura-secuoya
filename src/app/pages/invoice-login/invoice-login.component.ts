@@ -8,6 +8,7 @@ import { DocumentTypes } from '../../interfaces/document-types-response';
 import { REQUEST_TYPES } from '../../enums/REQUEST_TYPES';
 import { PERSON_TYPE } from '../../enums/PERSON_TYPE';
 import { DOCUMENT_TYPE } from '../../enums/DOCUMENT_TYPE';
+import { ValidateOcInfoComponent } from '../validate-oc-info/validate-oc-info.component';
 
 @Component({
   selector: 'app-invoice-login',
@@ -17,7 +18,8 @@ import { DOCUMENT_TYPE } from '../../enums/DOCUMENT_TYPE';
     TextInputComponent,
     MatTabsModule,
     FormsModule,
-    LogoComponent
+    LogoComponent,
+    ValidateOcInfoComponent
   ],
   templateUrl: './invoice-login.component.html',
   styleUrl: './invoice-login.component.scss'
@@ -25,6 +27,7 @@ import { DOCUMENT_TYPE } from '../../enums/DOCUMENT_TYPE';
 export class InvoiceLoginComponent extends FormBase {
 
   loading = false;
+  validationPending = false;
   filteredDocumentTypes: {optionValue: number, optionName: string}[] = [];
   documentTypes: DocumentTypes[] = [];
   formattedRequestTypes = [
@@ -69,7 +72,7 @@ export class InvoiceLoginComponent extends FormBase {
   }
 
   save() {
-
+    this.validationPending = true;
   }
 
 }

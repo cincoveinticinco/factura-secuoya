@@ -2,6 +2,10 @@
     <div class="loader">
       <div class="custom-loader"></div>
     </div>
+} 
+
+@if (validationPending) {
+  <app-validate-oc-info></app-validate-oc-info>
 } @else {
     <div class="invoice-login-container">
         <div class="invoice-login-header">

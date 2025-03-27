@@ -1,0 +1,45 @@
+@if (!value) {
+    @if (getErrors()) {
+      <small class="error">{{ getErrors()}}</small>
+    }
+  
+    <label
+        class="content-file-input margin-top"
+        appDragAndDropFile
+        [allowed_extensions]="allowedExtensions"
+        (onChangeFile)="onDragFileChange($event)"
+        >
+      <div class="label-content">
+        <img src="./assets/Upload.svg" alt="upload" class="upload">
+        <p>Arrastre y suelte el archivo aquí o <a>Haga clic para examinar los archivos</a></p>
+        <p> {{ onlyPdf ? 'Formatos Permitidos: (PDF *)' : '(Pdf*, Jpg*, Png*, Jpeg*)' }}</p>
+      </div>
+      <input
+        type="file"
+        [accept]="acceptAllowedExtensions"
+        (change)="onFileChange($event)" />
+    </label>
+  } @else {
+    <div class="content-file-filled">
+      @if (value.url) {
+        <span><a [href]="value.url" target="_blank">{{ value.name }}</a></span>
+      } @else {
+        <span>{{ value.name }}</span>
+      }
+      <button type="button" class="delete-button" (click)="changeView('comfirm-delete')">
+        <span class="material-symbols-outlined">
+          delete
+        </span>
+      </button>
+    </div>
+  }
+  
+  @if (view == 'comfirm-delete') {
+    <app-dialog
+      type="confirmation"
+      title="Eliminar"
+      message="¿Está seguro de que desea eliminar el documento?"
+      (closeModal)="changeView()"
+      (confirmModal)="clearFile()">
+    </app-dialog>
+  }
