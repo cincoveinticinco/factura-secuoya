@@ -20,10 +20,10 @@ export class ValidateOcInfoComponent {
     this.route.params.subscribe((params: any) => {
       this.registerId = params.registerId;
       if (this.registerId) {
+        // setTimeout(() => {
+        //   this.router.navigateByUrl('natural-form')
+        // }, 2000);
       }
-      setTimeout(() => {
-        this.router.navigateByUrl('natural-form')
-      }, 2000);
     });
   }
 

@@ -1,4 +1,4 @@
 export enum PERSON_TYPE {
-    Natural = 15,
+    Natural = 17,
     Juridica = 16,
 }

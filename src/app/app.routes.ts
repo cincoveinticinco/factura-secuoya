@@ -11,11 +11,11 @@ export const routes: Routes = [
         component: InvoiceLoginComponent
     },
     {
-        path: 'natural-form',
+        path: 'natural-form/:vendor_id',
         component: NaturalFormComponent
     },
     {
-        path: 'juridical-form',
+        path: 'juridical-form/:vendor_id',
         component: JuridicalFormComponent
     },
     {
@@ -25,9 +25,5 @@ export const routes: Routes = [
     {
         path: 'error',
         component: ErrorComponent
-    },
-    {
-        path: '**',
-        redirectTo: ''
-    },
+    }
 ];

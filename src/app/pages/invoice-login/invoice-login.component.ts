@@ -3,12 +3,15 @@ import { FormControl, FormGroup, FormsModule, ReactiveFormsModule, Validators } 
 import { MatTabChangeEvent, MatTabsModule } from '@angular/material/tabs';
 import { FormBase } from '../../bases/form-base';
 import { LogoComponent, SelectInputComponent, TextInputComponent } from '../../components';
-import { lastValueFrom } from 'rxjs';
+import { delay, lastValueFrom, tap } from 'rxjs';
 import { DocumentTypes } from '../../interfaces/document-types-response';
 import { REQUEST_TYPES } from '../../enums/REQUEST_TYPES';
 import { PERSON_TYPE } from '../../enums/PERSON_TYPE';
 import { DOCUMENT_TYPE } from '../../enums/DOCUMENT_TYPE';
 import { ValidateOcInfoComponent } from '../validate-oc-info/validate-oc-info.component';
+import { AuthService } from '../../services/auth.service';
+import { Router } from '@angular/router';
+import { InfoService } from '../../services';
 
 @Component({
   selector: 'app-invoice-login',
@@ -35,13 +38,15 @@ export class InvoiceLoginComponent extends FormBase {
     {optionName: "Anticipo", optionValue: REQUEST_TYPES.ANTICIPO}
   ]
 
-  constructor() {
+  constructor(
+    private authService: AuthService,
+  ) {
     const form = new FormGroup({
       personType: new FormControl(PERSON_TYPE.Natural, [Validators.required]),
-      documentType: new FormControl('', Validators.required),
-      documentNumber: new FormControl('', Validators.required),
+      documentType: new FormControl(36, Validators.required),
+      documentNumber: new FormControl('1020713519', Validators.required),
       requestType: new FormControl(REQUEST_TYPES.PURCHASE_ORDER, Validators.required),
-      orderNumber: new FormControl('', Validators.required),
+      orderNumber: new FormControl('0025677', Validators.required),
     });
     super(form);
   }
@@ -71,8 +76,58 @@ export class InvoiceLoginComponent extends FormBase {
       .map(item => ({optionValue: item.id, optionName: item.documentTypeEsp}));
   }
 
-  save() {
+  async save() {
+    if (this.parentForm.invalid) {
+      this.getControl('personType').markAsTouched();
+      this.getControl('documentType').markAsTouched();
+      this.getControl('documentNumber').markAsTouched();
+      this.getControl('orderNumber').markAsTouched();
+      return;
+    }
     this.validationPending = true;
+    try {
+      const response = await lastValueFrom(this.authService.authenticateUser(this.parentForm.value));
+      if (response.status === 200) {
+        await this.verifyLogIn();
+        // this.router.navigate(['/natural-form', vendorId]);
+      } else {
+        this.router.navigate(['/error']);
+      }    
+    } catch (error) {
+      console.log({error})
+      this.validationPending = false;
+    }
+  }
+
+  async verifyLogIn() {
+    if (this.localStorage.getToken()) {
+      this.loadFormInitialData();
+      return;
+    }
+    this.authService.logOut();
+  }
+
+  private async loadFormInitialData() {
+    this.loading = true;
+    try {
+      const vendor = await lastValueFrom(this.infoService.getFormInitialData());
+      this.navigateTo(vendor.fPersonTypeId, vendor.vendor.id);
+      this.localStorage.setVendor(vendor);
+      this.loading = false;
+    } catch (error: any) {
+      if(error && error.status === 401) {
+        this.authService.logOut();
+      }
+    }
+  }
+
+  navigateTo(f_person_type: PERSON_TYPE, vendor_id: number) {
+    console.log(f_person_type)
+    if (f_person_type === PERSON_TYPE.Natural) {
+      this.router.navigate(['natural-form', vendor_id]);
+      return;
+    }
+    this.router.navigate(['juridical-form', vendor_id]);
   }
 
 }
