@@ -2,7 +2,7 @@ import { AbstractControl, FormGroup } from "@angular/forms";
 import { FileService, GlobalService, InfoService, LocalStorageService } from "../services";
 import { inject } from "@angular/core";
 import { Router } from "@angular/router";
-import { last, lastValueFrom, of } from "rxjs";
+import { catchError, last, lastValueFrom, map, of, switchMap, throwError } from "rxjs";
 import { environment } from "../../environments/environment";
 import { HttpEventType } from "@angular/common/http";
 
@@ -38,41 +38,125 @@ export class FormBase {
         }
     }
 
-    async submitFile(event: { value: File; formControl: AbstractControl }) {
+    submitFile(event: { value: File; formControl: any }) {
         const { value, formControl } = event;
       
-        const vendorId: any = this.localStorage.getVendorId();
-
-        const nameFile = this.globalService.normalizeString(value.name);
-        const existingUrl = formControl.value.url;
-        if (existingUrl) {
+        const vendorId: any = this.localStorage.getToken();
+      
+        if (!value) {
+          const documentId = formControl.value.document_id;
+        //   if (documentId) {
+        //     this.vendorService.deleteVendorDocument({ document_id: documentId });
+        //   }
+        } else {
+          const nameFile = this.globalService.normalizeString(value.name);
+          const existingUrl = formControl.value.url;
+          if (existingUrl) {
             console.log('File already uploaded', existingUrl);
             return;
-        }
-        let putUrl: any;
-
-        try {
-            putUrl = await lastValueFrom(this.fileService.getPresignedPutURLOc(nameFile, vendorId, 'register_secuoya'));
-        } catch (error) {
-            if (environment?.stage !== 'local') {
+          }
+      
+          this.fileService.getPresignedPutURLOc(nameFile, vendorId, 'register')
+          .pipe(
+            catchError((error) => {
+              if (environment?.stage !== 'local') {
                 formControl.setValue(null, { emitEvent: false });
                 this.errorUploadingDocuments = [...this.errorUploadingDocuments, nameFile];
                 this.globalService.openSnackBar(`Fallo al guardar el documento ${nameFile}`, '', 5000);
-                return;
-            } else {
-                putUrl = { ...value, url: '' };
-            }
+                return throwError(() => new Error('Error al subir el archivo.'));
+              } else {
+                return of({ ...value, url: '' });
+              }
+            }),
+            map((putUrl: any) => ({
+              ...putUrl,
+              id: value,
+              file: value,
+            })),
+            switchMap((uploadFile: any) => {
+              if (!uploadFile.url) {
+                return of({ blobFile: null, uploadFile });
+              }
+              return new Promise(resolve => {
+                uploadFile.file.arrayBuffer().then((blobFile: File) => resolve({ blobFile, uploadFile }));
+              });
+            }),
+            switchMap((blobUpdateFile: any) => {
+              const { blobFile, uploadFile } = blobUpdateFile;
+              if (!blobFile) {
+                return of(uploadFile);
+              }
+              return this.fileService.uploadFileUrlPresigned(<File>blobFile, uploadFile.url, uploadFile.file.type)
+                .pipe(
+                  catchError((_) => {
+                    if (environment?.stage !== 'local') {
+                      formControl.setValue(null, { emitEvent: false });
+                      this.globalService.openSnackBar(`Fallo al guardar el documento ${nameFile}`, '', 5000);
+                      this.errorUploadingDocuments = [...this.errorUploadingDocuments, nameFile];     
+                      return throwError(() => new Error('Error al subir el archivo.'));
+                    } else {
+                      return of({ ...value, url: '' });
+                    }
+                  }),
+                  map((value) => value.type == HttpEventType.Response ? uploadFile : null)
+                );
+            }),
+            switchMap((uploadFile: any) => {
+              if (!uploadFile) return of(false);
+              const document_url = uploadFile?.url ? `${vendorId}/${nameFile}` : '';
+              const formControlCurrentValue = formControl.value;
+              this.fileService.signUrl(document_url).subscribe((res: any) => {
+                formControl.setValue({
+                  document_id: formControlCurrentValue?.document_id,
+                  name: value.name,
+                  url: res.url,
+                  document_url: document_url
+                });
+              });
+              return of(true);
+            })
+          )
+          .subscribe((value) => {
+          });
         }
-        const uploadfile = { ...putUrl, id: value, file: value };
-        let blobFile = null;
-        if (uploadfile.url) {
-            blobFile = uploadfile.file.arrayBuffer();
-        }
-        await this.uploadFileUrlPresigned({ blobFile, uploadfile }, vendorId, nameFile, formControl, value);
-    }
+      }
+
+    // async submitFile(event: { value: File; formControl: AbstractControl }) {
+    //     const { value, formControl } = event;
+      
+    //     const vendorId: any = this.localStorage.getVendorId();
+
+    //     const nameFile = this.globalService.normalizeString(value.name);
+    //     const existingUrl = formControl.value.url;
+    //     if (existingUrl) {
+    //         console.log('File already uploaded', existingUrl);
+    //         return;
+    //     }
+    //     let putUrl: any;
+
+    //     try {
+    //         putUrl = await lastValueFrom(this.fileService.getPresignedPutURLOc(nameFile, vendorId, 'register_secuoya'));
+    //     } catch (error) {
+    //         if (environment?.stage !== 'local') {
+    //             formControl.setValue(null, { emitEvent: false });
+    //             this.errorUploadingDocuments = [...this.errorUploadingDocuments, nameFile];
+    //             this.globalService.openSnackBar(`Fallo al guardar el documento ${nameFile}`, '', 5000);
+    //             return;
+    //         } else {
+    //             putUrl = { ...value, url: '' };
+    //         }
+    //     }
+    //     const uploadfile = { ...putUrl, id: value, file: value };
+    //     let blobFile = value;
+    //     if (uploadfile.url) {
+    //         blobFile = uploadfile.file.arrayBuffer();
+    //     }
+    //     await this.uploadFileUrlPresigned({ blobFile, uploadfile }, vendorId, nameFile, formControl, value);
+    // }
 
     async uploadFileUrlPresigned(blobUpdateFile: any, vendorId: string, nameFile: string, formControl: AbstractControl, file: any) {
         const { blobFile, uploadfile } = blobUpdateFile;
+        console.log(blobFile)
         if (!blobFile) {
             await this.signUrl(uploadfile, vendorId, nameFile, formControl);
             return;

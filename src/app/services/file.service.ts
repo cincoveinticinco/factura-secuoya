@@ -29,8 +29,9 @@ export class FileService {
 
     uploadFileUrlPresigned(file: any, uploadUrl: string, contentType:string): Observable<any> {
 		const headers = new HttpHeaders({'Content-Type': contentType, 'Accept': '*/*'});
+        console.log(file)
 		const req = new HttpRequest(
-			'PUT', uploadUrl, file, {
+			'PUT', uploadUrl, {...file}, {
 			headers: headers
 		});
 		return this.http.request(req);
@@ -44,5 +45,12 @@ export class FileService {
 
         return this.http.get(`${environment.apiUrl}cmo/sign_document`, { params });
     }
+
+    updateVendorDocument(formData: any){
+        return this.http.post(`${environment.apiUrl}cmo/add_document_vendor`, {...formData})
+        .pipe(map( response => response))
+      }
+
+
 
 }
