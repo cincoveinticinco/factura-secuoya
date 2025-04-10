@@ -52,7 +52,7 @@ export class FormBase {
         let putUrl: any;
 
         try {
-            putUrl = await lastValueFrom(this.fileService.getPresignedPutURLOc(nameFile, vendorId, 'register'));
+            putUrl = await lastValueFrom(this.fileService.getPresignedPutURLOc(nameFile, vendorId, 'register_secuoya'));
         } catch (error) {
             if (environment?.stage !== 'local') {
                 formControl.setValue(null, { emitEvent: false });
