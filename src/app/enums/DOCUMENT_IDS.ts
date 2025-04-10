@@ -1,0 +1,5 @@
+export enum DOCUMENT_IDS {
+    TEMPLATE = 527,
+    INVOICE = 543,
+    ELECTRONIC_INVOICE = 544,
+}

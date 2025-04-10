@@ -22,4 +22,10 @@ export class InfoService {
     return this.http.get<VendorData>(`${environment.apiUrl}cmo/get_form_initial_data`, {});
   }
 
+  updateRegisterVendor(formParams: any) {
+    const params = formParams;
+
+    return this.http.post(`${environment.apiUrl}cmo/update_register`, params, { });
+  }
+
 }

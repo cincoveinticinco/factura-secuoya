@@ -21,47 +21,27 @@
         </th>
       </tr>
       <!-- should iterate in selectedOrders -->
-      <tr>
-        <td>
-          0
-        </td>
-        <td>
-          0
-        </td>
-        <td>
-          {{ fromNumberToCop(0) }}
-        </td>
-        <td>
-          {{ fromNumberToCop(0) }}
-        </td>
-        <td>
-          {{ fromNumberToCop(0) }}
-        </td>
-        <td>
-          {{ fromNumberToCop(0) }}
-        </td>
-      </tr>
-      <!-- @for( order of getProjectionsForSelectedOrders(); track order) {
+      @for( projection of projections; track projection) {
         <tr>
           <td>
-            {{ order.consecutive_code }}
+            {{ projection.consecutive_code }}
           </td>
           <td>
-            {{ order.description }}
+            {{ projection.description }}
           </td>
           <td>
-            {{ fromNumberToCop(order.taxes_addition_value) }}
+            {{ fromNumberToCop(projection.taxes_addition_value) }}
           </td>
           <td>
-            {{ fromNumberToCop(order.taxes_not_addition_value) }}
+            {{ fromNumberToCop(projection.taxes_not_addition_value) }}
           </td>
           <td>
-            {{ fromNumberToCop(order.value) }}
+            {{ fromNumberToCop(projection.value) }}
           </td>
           <td>
-            {{ fromNumberToCop(order.total) }}
+            {{ fromNumberToCop(projection.total) }}
           </td>
         </tr>
-      } -->
+      }
     </table>
   </div>

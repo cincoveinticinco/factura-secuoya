@@ -1,0 +1,22 @@
+.form-container {
+    width: 650px;
+    margin: 100px auto;
+}
+table {
+    border-collapse: collapse;
+    width: 100%;
+    margin: 20px 0;
+
+    th, td {
+        border: .5px solid black;
+        padding: 6px;
+        font-size: 12px;
+        max-width: 200px;
+        text-align: center;
+    }
+    th {
+        font-size: 14px;
+        font-weight: 700;
+        max-width: 200px;
+    }
+}

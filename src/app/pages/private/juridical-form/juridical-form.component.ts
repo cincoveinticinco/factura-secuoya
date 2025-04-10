@@ -2,6 +2,7 @@ import { Component } from '@angular/core';
 import { FormControl, FormGroup, Validators } from '@angular/forms';
 import { FormBase } from '../../../bases/form-base';
 import { FileboxComponent, LogoComponent, OrdersTableComponent, SelectInputComponent, SubtitleComponent, TextInputComponent } from '../../../components';
+import { Order, VendorData } from '../../../interfaces/vendor-data.interface';
 
 @Component({
   selector: 'app-juridical-form',
@@ -19,6 +20,8 @@ import { FileboxComponent, LogoComponent, OrdersTableComponent, SelectInputCompo
 export class JuridicalFormComponent extends FormBase {
 
   loading = false;
+  vendor!: VendorData;
+  selectedOrders!: Order[];
 
   constructor() {
     const form = new FormGroup({
@@ -29,10 +32,53 @@ export class JuridicalFormComponent extends FormBase {
       companyName: new FormControl({value:'', disabled: true}, Validators.required),
       address: new FormControl({value:'', disabled: true}, Validators.required),
       email: new FormControl({value:'', disabled: true}, Validators.required),
-      invoice: new FormControl({value:'', disabled: true}, Validators.required),
+      electronic_invoice: new FormControl({value:'', disabled: true}, Validators.required),
     });
 
     super(form);
+  }
+
+  ngOnInit() {
+    this.setForm();
+  }
+
+  setForm() {
+    this.vendor = this.localStorage.getVendor();
+    this.getControl('personType').patchValue(this.vendor.vendor.personType);
+    this.getControl('documentType').patchValue(this.vendor.vendor.documentTypeEsp);
+    this.getControl('documentNumber').patchValue(this.vendor.vendor.documentNumber);
+    this.getControl('companyName').patchValue(this.vendor.vendor.companyName);
+    this.getControl('address').patchValue(this.vendor.vendor.address);
+    this.getControl('email').patchValue(this.vendor.vendor.email);
+    this.getControl('purchaseOrder').patchValue(this.vendor.selectedOrders[0].consecutiveCodes);
+    this.setSelectedOrders();
+  }
+  
+  setSelectedOrders() {
+    this.selectedOrders = this.vendor.selectedOrders;
+    this.selectedOrders = this.selectedOrders.map(order => ({...order, optionName: order.consecutiveCodes, optionValue: order.consecutiveCodes}))
+  }
+
+  async onSubmit() {
+    this.loading = true;
+    this.errorUploadingDocuments = [];
+    await this.uploadFiles(['electronic_invoice']);
+    const params = this.setDocumentIds();
+    this.localStorage.setParams(params);
+    this.router.navigate(['po-orders']);
+    this.loading = false;
+  }
+
+  setDocumentIds() {
+    const params: any = { vendor_documents: [] };
+    if (this.getControl('electronic_invoice')) {
+      params.vendor_documents.push({
+        document_type_id: 544,
+        document: this.getControl('electronic_invoice')?.value.document_url,
+        document_id: this.getControl('electronic_invoice')?.value.document_id
+      });
+    }
+    return params;
   }
 
 }

@@ -3,6 +3,7 @@ import { DialogComponent } from '../../shared/dialog/dialog.component';
 import { AbstractControl, FormControl, NgControl, ReactiveFormsModule, ValidationErrors } from '@angular/forms';
 import { Subscription } from 'rxjs';
 import { DragAndDropFileDirective } from '../../../directives/drag-and-drop-file.directive';
+import { DOCUMENT_IDS } from '../../../enums/DOCUMENT_IDS';
 
 @Component({
   selector: 'app-filebox',
@@ -17,6 +18,7 @@ import { DragAndDropFileDirective } from '../../../directives/drag-and-drop-file
 export class FileboxComponent {
   @Input() onlyPdf = true;
   @Input() control: any = new FormControl();
+  @Input() name: string = '';
   @Input() allowedExtensions: string[] = ['pdf', 'PDF', 'jpeg', 'jpg', 'png'];
 
   @Output() onChanges = new EventEmitter<any>()
@@ -71,6 +73,7 @@ export class FileboxComponent {
     if (files && files.length > 0) {
       const file = files[0];
       this.value = { file, name: file.name, url: null };
+      this.addDocumentId();
       this.onChange(this.value);
       this.control.setValue(this.value);
     }
@@ -119,4 +122,14 @@ export class FileboxComponent {
   changeView(newView: string = '') {
     this.view = newView;
   }
+
+  addDocumentId() {
+    const ids: any = {
+      'template': DOCUMENT_IDS.TEMPLATE,
+      'invoice': DOCUMENT_IDS.INVOICE,
+      'electronic_invoice': DOCUMENT_IDS.ELECTRONIC_INVOICE
+    }
+    this.value.document_id = ids[this.name];
+  }
+
 }

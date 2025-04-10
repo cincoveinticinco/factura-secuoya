@@ -28,8 +28,16 @@ export class LocalStorageService {
     localStorage.setItem('vendor', JSON.stringify(vendor));
   }
 
-  getVendor() {
+  getVendor(): VendorData {
     return JSON.parse(localStorage.getItem('vendor') || '');
+  }
+
+  setParams(params: any) {
+    localStorage.setItem('params', JSON.stringify(params));
+  }
+
+  getParams(): any {
+    return JSON.parse(localStorage.getItem('params') || '');
   }
 
 }

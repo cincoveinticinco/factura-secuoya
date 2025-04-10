@@ -89,7 +89,6 @@ export class InvoiceLoginComponent extends FormBase {
       const response = await lastValueFrom(this.authService.authenticateUser(this.parentForm.value));
       if (response.status === 200) {
         await this.verifyLogIn();
-        // this.router.navigate(['/natural-form', vendorId]);
       } else {
         this.router.navigate(['/error']);
       }    
@@ -122,7 +121,6 @@ export class InvoiceLoginComponent extends FormBase {
   }
 
   navigateTo(f_person_type: PERSON_TYPE, vendor_id: number) {
-    console.log(f_person_type)
     if (f_person_type === PERSON_TYPE.Natural) {
       this.router.navigate(['natural-form', vendor_id]);
       return;

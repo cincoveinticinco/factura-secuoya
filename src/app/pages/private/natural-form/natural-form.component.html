@@ -8,13 +8,13 @@
         <h1 class="form-title">CONFIRMACIÓN DE RADICACIÓN</h1>
         <p>Para continuar con el proceso de radicación, por favor complete el siguiente formulario</p>
 
-        <form action="">
+        <form [formGroup]="parentForm" (ngSubmit)="onSubmit()">
             <app-subtitle [subtitle]="'DOCUMENTOS PRECARGADOS'"></app-subtitle>
             <div class="row">
               <app-select-input
                 [label]="'Orden de compra'"
                 [control]="getControl('purchaseOrder')"
-                [options]="[]"
+                [options]="selectedOrders"
                 [optionName]="'optionName'"
                 [optionValue]="'optionValue'"
                 class="col-6"
@@ -71,10 +71,10 @@
             
             
             <label>Planilla seguridad social mes vigente pago (Mínimo por el 40% ingresos, debe Incluir ARL) *</label>
-            <app-filebox [control]="getControl('template')"></app-filebox>
+            <app-filebox [control]="getControl('template')" name="template"></app-filebox>
             
             <label>Factura o cuenta de cobro *</label>
-            <app-filebox [control]="getControl('invoice')"></app-filebox>
+            <app-filebox [control]="getControl('invoice')" name="invoice"></app-filebox>
             <!-- / REQUIRED FILES -->
 
             <div class="row margin-top padding-bottom">
