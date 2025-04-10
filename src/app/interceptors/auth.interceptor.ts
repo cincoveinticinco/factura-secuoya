@@ -8,9 +8,12 @@ export const authInterceptor: HttpInterceptorFn = (req, next) => {
   const localStorage = inject(LocalStorageService)
 
   const token = localStorage.getToken();
-  const authReq = req.clone({
+  let authReq = req.clone({
     headers: req.headers.append('Authorization', `Bearer ${token}`).append('Content-Type', 'application/json'),
-  });  
+  });
+  if (req.method === 'PUT') {
+    authReq = req;
+  }
   return next(authReq);
 
 };
