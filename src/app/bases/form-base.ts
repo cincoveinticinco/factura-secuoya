@@ -98,7 +98,6 @@ export class FormBase {
 
     async signUrl(uploadFile: any, vendorId: string, nameFile: string, formControl: AbstractControl) {
         if (!uploadFile) return;
-        console.log(formControl)
         const document_url = uploadFile?.url ? `${vendorId}/${nameFile}` : '';
         const res: any = await lastValueFrom(this.fileService.signUrl(document_url)); 
         formControl.setValue({
