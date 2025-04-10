@@ -34,8 +34,9 @@ export class PoOrdersComponent {
   async save() {
     const params = this.localStorage.getParams();
     params.selected_orders = [ this.localStorage.getVendor().selectedOrders[0].id.toString() ]
-    await lastValueFrom(this.infoService.updateRegisterVendor(params));
+    const radicateInfo = await lastValueFrom(this.infoService.updateRegisterVendor(params));
     localStorage.clear();
+    this.localStorage.setRadicadoInfo(radicateInfo);
     this.router.navigate(['thanks']);
   }
 

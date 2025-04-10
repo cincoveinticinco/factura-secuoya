@@ -1,0 +1,38 @@
+.success-wrapper {
+    width: 500px;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    position: absolute;
+    top: 50%;
+    left: 50%;
+    transform: translate(-50%, -50%);
+    
+    p {
+      text-align: center;
+    }
+  }
+  
+  .radicado-container {
+    border: 1px solid #f8e9e9;
+    background-color: #f8e9e9;
+    font-size: 18px;
+    color: #2B2F32;
+    width: 250px;
+    height: 40px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    margin-bottom: 12px;
+  }
+  
+  .buttons-wrapper {
+    display: flex;
+    justify-content: center;
+    margin-top: 20px;
+  
+    button {
+      width: 300px;
+    }
+  }

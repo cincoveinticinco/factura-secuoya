@@ -1,13 +1,21 @@
 <div class="center-content">
     @if (!loading) {
-      <div class="content full-width">
+      <div class="success-wrapper">
         <app-logo></app-logo>
-        <h2></h2>
-        <p class="align-center justify-center flex-column">
-           Gracias por realizar la radicación de la orden de compra.
-           <button mat-raised-button color="primary" class="btn-red margin-top" (click)="goBack()">Volver a la página de inicio</button>
-        </p>
-
+        <h1>EL NÚMERO DE RADICADO ES</h1>
+        <div class="radicado-container">
+          <span><b>#{{radicado}}</b></span>
+        </div>
+        <p style="font-weight: bold;">Fecha de radicación:</p>
+        <div class="radicado-container">
+          <span><b>{{date ? (date | date: 'yyyy/MM/dd') : '--/--/----'}}</b></span>
+        </div>
+        <p>Si lo desea, descargue el soporte de radicación</p>
+        <a [href]="url" class="margin-bottom" target="_blank">click aqui</a>
+        <p>Gracias por realizar su radicación, nuestro equipo hará la respectiva verificación para continuar con el proceso.</p>
+        <div class="buttons-wrapper">
+            <button class="btn btn-red" (click)="goBack()">Cerrar</button>
+        </div>
       </div>
     } @else {
       <div class="loader">

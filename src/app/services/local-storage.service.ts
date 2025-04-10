@@ -43,9 +43,17 @@ export class LocalStorageService {
   setFormValue(form: any) {
     localStorage.setItem('form', JSON.stringify(form));
   }
-
+  
   getFormValue(): any {
     return JSON.parse(localStorage.getItem('form')!);
+  }
+  
+  setRadicadoInfo(radicado_info: any) {
+    localStorage.setItem('radicado_info', JSON.stringify(radicado_info));
+  }
+
+  getRadicadoInfo(): any {
+    return JSON.parse(localStorage.getItem('radicado_info')!);
   }
 
 }
