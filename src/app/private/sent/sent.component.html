@@ -1,0 +1,20 @@
+@if(loading){
+    <app-validate-oc-info></app-validate-oc-info>
+   } @else {
+     <div class="send-oc-container">
+       <app-logo></app-logo>
+       @if(!emailSent) {
+         <h1>ENVIAR NÚMERO DE ORDEN</h1>
+         <p class="justify-center">Enviaremos el número de orden al siguientes correo: </p>
+         <form [formGroup]="sendOcForm" (ngSubmit)="sendForm()" class="align-center">
+           <input type="email" formControlName="email" placeholder="" class="email-input">
+           <button mat-raised-button color="primary" class="btn-red margin-top" type="submit">ENVIAR</button>
+         </form>
+       } @else {
+         <h1>¡CORREO ENVIADO!</h1>
+         <p class="justify-center">Hemos enviado el número de orden al correo</p>
+         <button mat-raised-button color="primary" class="btn-red" (click)="backToHome()">VOLVER AL INICIO</button>
+       }
+     </div>
+     
+   }

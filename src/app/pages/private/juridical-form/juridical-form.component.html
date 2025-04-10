@@ -8,13 +8,13 @@
         <h1 class="form-title">CONFIRMACIÓN DE RADICACIÓN</h1>
         <p>Para continuar con el proceso de radicación, por favor complete el siguiente formulario</p>
 
-        <form action="">
+        <form [formGroup]="parentForm">
             <app-subtitle [subtitle]="'DOCUMENTOS PRECARGADOS'"></app-subtitle>
             <div class="row">
               <app-select-input
                 [label]="'Orden de compra'"
                 [control]="getControl('purchaseOrder')"
-                [options]="[]"
+                [options]="selectedOrders"
                 [optionName]="'optionName'"
                 [optionValue]="'optionValue'"
                 class="col-6"
@@ -74,7 +74,7 @@
             <!-- / REQUIRED FILES -->
 
             <div class="row margin-top padding-bottom">
-              <button class="col-12 btn-red margin-top" type="submit">Finalizar</button>
+              <button class="col-12 btn-red margin-top" type="submit" (click)="onSubmit()">Finalizar</button>
             </div>
 
             

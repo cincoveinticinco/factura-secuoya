@@ -1,8 +1,8 @@
 export enum DOCUMENT_TYPE {
-    CEDULA_CIUDADANIA = 25,
-    NUIP = 26,
-    TARJETA_IDENTIDAD = 27,
-    CE = 28,
-    PASAPORTE = 29,
-    NIT = 30
+    CEDULA_CIUDADANIA = 36,
+    NUIP = 37,
+    TARJETA_IDENTIDAD = 38,
+    CE = 39,
+    PASAPORTE = 40,
+    NIT = 41
   }

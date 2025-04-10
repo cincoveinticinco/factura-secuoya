@@ -28,4 +28,29 @@ export class InfoService {
     return this.http.post(`${environment.apiUrl}cmo/update_register`, params, { });
   }
 
+  // This function will retrieve three keys, purchaseOrders that haves an array of purchaseOrders ids, vendorEmail and the status of the request
+  getPurchaseOrders(vendorDocument: number, requestType: string) {
+    // send in params vendor_document
+    return this.http.get(`${environment.apiUrl}cmo/get_purchase_orders`, {
+      params: {
+        vendor_document: vendorDocument.toString(), 
+        f_request_has_project_types_id: requestType
+      }
+    });
+  }
+
+  sendPurchaseOrdersToEmail(formValues: {
+    email: string,
+    purchaseOrdersIds: string,
+    document: number
+  }) {
+    return this.http.get(`${environment.apiUrl}cmo/send_purchase_orders_email`, {
+      params: {
+        email: formValues.email,
+        purchase_orders_ids: formValues.purchaseOrdersIds,
+        document: formValues.document.toString()
+      }
+    });
+  }
+
 }

@@ -1,5 +1,5 @@
 import { Component } from '@angular/core';
-import { FormControl, FormGroup, Validators } from '@angular/forms';
+import { FormControl, FormGroup, ReactiveFormsModule, Validators } from '@angular/forms';
 import { FormBase } from '../../../bases/form-base';
 import { FileboxComponent, LogoComponent, OrdersTableComponent, SelectInputComponent, SubtitleComponent, TextInputComponent } from '../../../components';
 import { Order, VendorData } from '../../../interfaces/vendor-data.interface';
@@ -12,7 +12,8 @@ import { Order, VendorData } from '../../../interfaces/vendor-data.interface';
     TextInputComponent,
     FileboxComponent,
     OrdersTableComponent,
-    SelectInputComponent
+    SelectInputComponent,
+    ReactiveFormsModule
   ],
   templateUrl: './juridical-form.component.html',
   styleUrl: './juridical-form.component.scss'
@@ -52,6 +53,7 @@ export class JuridicalFormComponent extends FormBase {
     this.getControl('email').patchValue(this.vendor.vendor.email);
     this.getControl('purchaseOrder').patchValue(this.vendor.selectedOrders[0].consecutiveCodes);
     this.setSelectedOrders();
+    this.setDocuments();
   }
   
   setSelectedOrders() {
@@ -64,6 +66,7 @@ export class JuridicalFormComponent extends FormBase {
     this.errorUploadingDocuments = [];
     await this.uploadFiles(['electronic_invoice']);
     const params = this.setDocumentIds();
+    this.localStorage.setFormValue(this.parentForm.value);
     this.localStorage.setParams(params);
     this.router.navigate(['po-orders']);
     this.loading = false;
@@ -74,11 +77,22 @@ export class JuridicalFormComponent extends FormBase {
     if (this.getControl('electronic_invoice')) {
       params.vendor_documents.push({
         document_type_id: 544,
-        document: this.getControl('electronic_invoice')?.value.document_url,
-        document_id: this.getControl('electronic_invoice')?.value.document_id
+        document: this.getControl('electronic_invoice')?.value?.document_url,
+        document_id: this.getControl('electronic_invoice')?.value?.document_id
       });
     }
     return params;
+  }
+
+  setDocuments() {
+    const form = this.localStorage.getFormValue() || '';
+    console.log(form)
+    if (form.electronic_invoice) {
+      this.getControl('electronic_invoice').setValue(form.electronic_invoice);
+    }
+    if (form.invoice) {
+      this.getControl('invoice').setValue(form.invoice);
+    }
   }
 
 }

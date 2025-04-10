@@ -35,6 +35,8 @@ export class PoOrdersComponent {
     const params = this.localStorage.getParams();
     params.selected_orders = [ this.localStorage.getVendor().selectedOrders[0].id.toString() ]
     await lastValueFrom(this.infoService.updateRegisterVendor(params));
+    localStorage.clear();
+    this.router.navigate(['thanks']);
   }
 
 }

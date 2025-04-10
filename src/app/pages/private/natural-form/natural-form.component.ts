@@ -55,6 +55,7 @@ export class NaturalFormComponent extends FormBase {
     this.getControl('email').patchValue(this.vendor.vendor.email);
     this.getControl('purchaseOrder').patchValue(this.vendor.selectedOrders[0].consecutiveCodes);
     this.setSelectedOrders();
+    this.setDocuments();
   }
   
   setSelectedOrders() {
@@ -67,6 +68,7 @@ export class NaturalFormComponent extends FormBase {
     this.errorUploadingDocuments = [];
     await this.uploadFiles(['template', 'invoice']);
     const params = this.setDocumentIds();
+    this.localStorage.setFormValue(this.parentForm.value);
     this.localStorage.setParams(params);
     this.router.navigate(['po-orders']);
     this.loading = false;
@@ -89,6 +91,16 @@ export class NaturalFormComponent extends FormBase {
       });
     }
     return params;
+  }
+
+  setDocuments() {
+    const form = this.localStorage.getFormValue() || '';
+    if (form.template) {
+      this.getControl('template').setValue(form.template);
+    }
+    if (form.invoice) {
+      this.getControl('invoice').setValue(form.invoice);
+    }
   }
 
 

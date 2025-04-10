@@ -64,9 +64,15 @@
             ></app-text-input>
           </form>
         </div>
+        @if (formErrors.length > 0) {
+          <div class="error-container">
+              @for (error of formErrors; track error) {
+                <span class="error-message">{{ error }}</span>
+              }
+          </div>
+        }
         <div class="invoice-login-footer">
-          <p>¿Necesita recibir el número de orden? <a>Click aquí.</a></p>
-          <!-- <p>¿Necesita recibir el número de orden? <a (click)="receivePurchaseOrders()">Click aquí.</a></p> -->
+          <p>¿Necesita recibir el número de orden? <a (click)="receivePurchaseOrders()">Click aquí.</a></p>
           <button mat-raised-button color="primary" class="btn-red" form="invoice-login-form" type="submit">INGRESAR</button>
         </div>
       </div>

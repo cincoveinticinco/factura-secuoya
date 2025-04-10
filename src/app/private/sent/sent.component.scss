@@ -1,0 +1,28 @@
+.send-oc-container {
+    position: absolute;
+    top: 50%;
+    left: 50%;
+    transform: translate(-50%, -50%);
+    width: 600px;
+    text-align: center;
+  
+    form {
+      flex-direction: column;
+  
+      .email-input {
+        width: 250px;
+      }
+  
+     input {
+        background-color: #F0F9F6 !important;
+        height: 40px;
+        border-radius: 4px;
+        border: 1px solid#EFF1F9;
+      }
+  
+      .btn-purpple {
+        width: 250px;
+        margin-top: 3rem;
+      }
+    }
+  }

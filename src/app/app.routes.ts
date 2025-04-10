@@ -6,11 +6,16 @@ import { ThanksComponent } from './pages/thanks/thanks.component';
 import { ErrorComponent } from './pages/error/error.component';
 import { PoOrdersComponent } from './pages/private/po-orders/po-orders.component';
 import { authGuard } from './guards/auth.guard';
+import { SentComponent } from './private/sent/sent.component';
 
 export const routes: Routes = [
     {
         path: '',
         component: InvoiceLoginComponent
+    },
+    {
+        path: 'sent',
+        component: SentComponent
     },
     {
         path: 'natural-form/:vendor_id',

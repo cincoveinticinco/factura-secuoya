@@ -35,9 +35,17 @@ export class LocalStorageService {
   setParams(params: any) {
     localStorage.setItem('params', JSON.stringify(params));
   }
-
+  
   getParams(): any {
     return JSON.parse(localStorage.getItem('params') || '');
+  }
+  
+  setFormValue(form: any) {
+    localStorage.setItem('form', JSON.stringify(form));
+  }
+
+  getFormValue(): any {
+    return JSON.parse(localStorage.getItem('form')!);
   }
 
 }

@@ -32,6 +32,7 @@ export class InvoiceLoginComponent extends FormBase {
   loading = false;
   validationPending = false;
   filteredDocumentTypes: {optionValue: number, optionName: string}[] = [];
+  formErrors: string[] = [];
   documentTypes: DocumentTypes[] = [];
   formattedRequestTypes = [
     {optionName: "Orden de compra", optionValue: REQUEST_TYPES.PURCHASE_ORDER},
@@ -42,16 +43,17 @@ export class InvoiceLoginComponent extends FormBase {
     private authService: AuthService,
   ) {
     const form = new FormGroup({
-      personType: new FormControl(PERSON_TYPE.Natural, [Validators.required]),
-      documentType: new FormControl(36, Validators.required),
-      documentNumber: new FormControl('1020713519', Validators.required),
+      personType: new FormControl('', [Validators.required]),
+      documentType: new FormControl('', Validators.required),
+      documentNumber: new FormControl('', Validators.required),
       requestType: new FormControl(REQUEST_TYPES.PURCHASE_ORDER, Validators.required),
-      orderNumber: new FormControl('0025677', Validators.required),
+      orderNumber: new FormControl('', Validators.required),
     });
     super(form);
   }
 
   async ngOnInit() {
+    localStorage.clear();
     const data = await lastValueFrom(this.infoService.getDocumentTypes());
     this.documentTypes = data;
     this.filterDocumentTypes(PERSON_TYPE.Natural);
@@ -117,6 +119,57 @@ export class InvoiceLoginComponent extends FormBase {
       if(error && error.status === 401) {
         this.authService.logOut();
       }
+    }
+  }
+
+  validatyDocumentTypeAndNumber() {
+    const documentType = this.getControl('documentType').value;
+    const documentNumber = this.getControl('documentNumber').value;
+    const requestType = this.getControl('requestType').value
+  
+    if(documentType && documentNumber && requestType) {
+      this.validationPending = true;
+      return true;
+    } else {
+      this.getControl('documentType').markAsTouched();
+      this.getControl('documentNumber').markAsTouched();
+      this.getControl('requestType').markAllAsTouched()
+      
+      const error = 'Por favor, complete los campos de tipo de documento, número de documento y tipo de solicitud para recibir la orden de compra';
+      this.formErrors.push(error);
+      setTimeout(() => {
+        this.formErrors = this.formErrors.filter((item) => item !== error);
+      }, 5000);
+      return false;
+    }
+  }
+
+  receivePurchaseOrders() {
+    if(this.validatyDocumentTypeAndNumber()) {
+      const vendorDocument = this.getControl('documentNumber').value;
+      const requestType = this.getControl('requestType').value
+      this.infoService.getPurchaseOrders(vendorDocument, requestType).subscribe(
+        (response: any) => {
+          setTimeout(() => {
+            this.validationPending = false;
+          }, 2000);
+          if (response.status === 200) {
+            setTimeout(() => {
+              this.router.navigate(['/sent'], { 
+                state: { email: response.vendorEmail, purchaseOrdersIds: response.purchaseOrders, document: vendorDocument } 
+              });
+            }, 2000);
+          } else {
+            setTimeout(() => {
+              this.router.navigate(['/error']);
+            }, 2000);
+          }
+        },
+        (error) => {
+          this.validationPending = false;
+          this.router.navigate(['/error']);
+        }
+      );
     }
   }
 
