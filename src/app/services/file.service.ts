@@ -38,11 +38,11 @@ export class FileService {
 
     signUrl(document: any) {
         let params = {
-            'document': document
+          'document': document,
+          company_id: 18,
         }
 
         return this.http.get(`${environment.apiUrl}cmo/sign_document`, { params });
     }
 
 }
-  

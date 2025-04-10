@@ -15,15 +15,16 @@ export class InfoService {
 
 
   getDocumentTypes() {
-    return this.http.get<DocumentTypes[]>(`${environment.apiUrl}cmo/get_document_types`);
+    return this.http.get<DocumentTypes[]>(`${environment.apiUrl}cmo/get_document_types?company_id=18`);
   }
 
   getFormInitialData() {
-    return this.http.get<VendorData>(`${environment.apiUrl}cmo/get_form_initial_data`, {});
+    return this.http.get<VendorData>(`${environment.apiUrl}cmo/get_form_initial_data?company_id=18`, {});
   }
 
   updateRegisterVendor(formParams: any) {
-    const params = formParams;
+    let params = formParams;
+    params.company_id = '18';
 
     return this.http.post(`${environment.apiUrl}cmo/update_register`, params, { });
   }
@@ -33,8 +34,9 @@ export class InfoService {
     // send in params vendor_document
     return this.http.get(`${environment.apiUrl}cmo/get_purchase_orders`, {
       params: {
-        vendor_document: vendorDocument.toString(), 
-        f_request_has_project_types_id: requestType
+        vendor_document: vendorDocument.toString(),
+        f_request_has_project_types_id: requestType,
+        company_id: '18',
       }
     });
   }
@@ -48,7 +50,8 @@ export class InfoService {
       params: {
         email: formValues.email,
         purchase_orders_ids: formValues.purchaseOrdersIds,
-        document: formValues.document.toString()
+        document: formValues.document.toString(),
+        company_id: '18',
       }
     });
   }
