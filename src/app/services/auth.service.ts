@@ -29,7 +29,8 @@ export class AuthService {
             f_document_type_id: form.documentType,
             document_number: form.documentNumber,
             order_number: form.orderNumber,
-            f_request_has_project_types_id: form.requestType
+            f_request_has_project_types_id: form.requestType,
+            company_id: 18
         }
 
         return this.http.get(`${environment.apiUrl}cmo/authenticate_oc_user`, {
