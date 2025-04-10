@@ -3,9 +3,11 @@
       <div class="content full-width">
         <app-logo></app-logo>
         <h2></h2>
-        <p class="align-center">
-           Gracias por realizar la radicación de compra.
+        <p class="align-center justify-center flex-column">
+           Gracias por realizar la radicación de la orden de compra.
+           <button mat-raised-button color="primary" class="btn-red margin-top" (click)="goBack()">Volver a la página de inicio</button>
         </p>
+
       </div>
     } @else {
       <div class="loader">

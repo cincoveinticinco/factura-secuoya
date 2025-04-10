@@ -77,6 +77,7 @@ export class FileboxComponent {
       this.onChange(this.value);
       this.control.setValue(this.value);
     }
+    this.onChanges.emit();
   }
 
   validate(control: AbstractControl<any, any>): ValidationErrors | null {

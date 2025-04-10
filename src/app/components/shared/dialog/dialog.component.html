@@ -13,15 +13,15 @@
         <div class="options">
             @switch (type) {
                 @case ('confirmation') {
-                    <button mat-raised-button class="submit small" (click)="confirm()">{{confirmText}}</button>
-                    <button mat-raised-button class="cancel small" (click)="close()">{{ cancelText}}</button>
+                    <button mat-raised-button class="submit small btn-red" (click)="confirm()">{{confirmText}}</button>
+                    <button mat-raised-button class="cancel small btn-gray" (click)="close()">{{ cancelText}}</button>
                 }
                 @case ('choose') {
-                    <button mat-raised-button class="submit small" (click)="confirm()">{{confirmText}}</button>
-                    <button mat-raised-button class="cancel small" (click)="cancel()">{{ cancelText}}</button>
+                    <button mat-raised-button class="submit small btn-red" (click)="confirm()">{{confirmText}}</button>
+                    <button mat-raised-button class="cancel small btn-gray" (click)="cancel()">{{ cancelText}}</button>
                 }
                 @case ('alert') {
-                    <button mat-raised-button class="submit small btn-purpple" (click)="close()">{{'Ok'}}</button>
+                    <button mat-raised-button class="submit small btn-red" (click)="close()">{{'Ok'}}</button>
                 }
             }
         </div>

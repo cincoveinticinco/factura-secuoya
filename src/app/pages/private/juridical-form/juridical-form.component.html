@@ -70,8 +70,14 @@
             <app-subtitle [subtitle]="'Documentos solicitados'"></app-subtitle>
             
             <label>Factura electronica *</label>
-            <app-filebox [control]="getControl('electronic_invoice')" name="electronic_invoice"></app-filebox>
+            <app-filebox [control]="getControl('electronic_invoice')" name="electronic_invoice" (onChanges)="validateFiles(['electronic_invoice'])"></app-filebox>
             <!-- / REQUIRED FILES -->
+
+            @if (hasError) {
+              <div class="error-container">
+                <span class="error-message"> Debe subir los archivos </span>
+              </div>
+            }
 
             <div class="row margin-top padding-bottom">
               <button class="col-12 btn-red margin-top" type="submit" (click)="onSubmit()">Finalizar</button>

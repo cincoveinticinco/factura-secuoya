@@ -62,6 +62,10 @@ export class JuridicalFormComponent extends FormBase {
   }
 
   async onSubmit() {
+    this.validateFiles(['electronic_invoice']);
+    if (this.hasError) {
+      return;
+    }
     this.loading = true;
     this.errorUploadingDocuments = [];
     await this.uploadFiles(['electronic_invoice']);

@@ -64,7 +64,13 @@ export class NaturalFormComponent extends FormBase {
   }
 
   async onSubmit() {
+    this.validateFiles(['template', 'invoice']);
+    if (this.hasError) {
+      return;
+    }
+
     this.loading = true;
+
     this.errorUploadingDocuments = [];
     await this.uploadFiles(['template', 'invoice']);
     const params = this.setDocumentIds();

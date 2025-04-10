@@ -71,12 +71,17 @@
             
             
             <label>Planilla seguridad social mes vigente pago (Mínimo por el 40% ingresos, debe Incluir ARL) *</label>
-            <app-filebox [control]="getControl('template')" name="template"></app-filebox>
+            <app-filebox [control]="getControl('template')" name="template" (onChanges)="validateFiles(['template', 'invoice'])"></app-filebox>
             
             <label>Factura o cuenta de cobro *</label>
-            <app-filebox [control]="getControl('invoice')" name="invoice"></app-filebox>
+            <app-filebox [control]="getControl('invoice')" name="invoice" (onChanges)="validateFiles(['template', 'invoice'])"></app-filebox>
             <!-- / REQUIRED FILES -->
 
+            @if (hasError) {
+              <div class="error-container">
+                <span class="error-message"> Debe subir los archivos </span>
+              </div>
+            }
             <div class="row margin-top padding-bottom">
               <button class="col-12 btn-red margin-top" type="submit" (click)="onSubmit()">Finalizar</button>
             </div>

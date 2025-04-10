@@ -16,6 +16,7 @@ export class FormBase {
     router = inject(Router);
 
     errorUploadingDocuments: string[] = [];
+    hasError = false;
 
 
     constructor(form: FormGroup) {
@@ -111,6 +112,16 @@ export class FormBase {
 
     sleep(ms: number): Promise<void> {
         return new Promise(resolve => setTimeout(resolve, ms));
+    }
+
+    validateFiles(controls: string[]) {
+        for (const control of controls) {
+            if (!this.getControl(control).value) {
+                this.hasError = true;
+                break;
+            }
+            this.hasError = false;
+        }
     }
 
 }

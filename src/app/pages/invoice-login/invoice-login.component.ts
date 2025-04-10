@@ -43,7 +43,7 @@ export class InvoiceLoginComponent extends FormBase {
     private authService: AuthService,
   ) {
     const form = new FormGroup({
-      personType: new FormControl('', [Validators.required]),
+      personType: new FormControl(PERSON_TYPE.Natural, [Validators.required]),
       documentType: new FormControl('', Validators.required),
       documentNumber: new FormControl('', Validators.required),
       requestType: new FormControl(REQUEST_TYPES.PURCHASE_ORDER, Validators.required),
@@ -79,6 +79,7 @@ export class InvoiceLoginComponent extends FormBase {
   }
 
   async save() {
+    console.log(this.parentForm)
     if (this.parentForm.invalid) {
       this.getControl('personType').markAsTouched();
       this.getControl('documentType').markAsTouched();
