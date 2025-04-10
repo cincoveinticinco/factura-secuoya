@@ -15,6 +15,7 @@ export class PoOrdersComponent {
 
   localStorage = inject(LocalStorageService);
   infoService = inject(InfoService);
+  disabled = false;
 
   constructor(
     private router: Router
@@ -32,6 +33,7 @@ export class PoOrdersComponent {
   }
 
   async save() {
+    this.disabled = true;
     const params = this.localStorage.getParams();
     params.selected_orders = [ this.localStorage.getVendor().selectedOrders[0].id.toString() ]
     const radicateInfo = await lastValueFrom(this.infoService.updateRegisterVendor(params));
