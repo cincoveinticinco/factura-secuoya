@@ -56,7 +56,6 @@ export class NaturalFormComponent extends FormBase {
     this.getControl('purchaseOrder').patchValue(this.vendor.selectedOrders[0].consecutiveCodes);
     this.setSelectedOrders();
     this.setDocuments();
-    debugger
   }
 
   setSelectedOrders() {
