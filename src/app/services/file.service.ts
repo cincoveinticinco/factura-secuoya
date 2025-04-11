@@ -31,7 +31,7 @@ export class FileService {
 		const headers = new HttpHeaders({'Content-Type': contentType, 'Accept': '*/*'});
         console.log(file)
 		const req = new HttpRequest(
-			'PUT', uploadUrl, {...file}, {
+			'PUT', uploadUrl, file, {
 			headers: headers
 		});
 		return this.http.request(req);
