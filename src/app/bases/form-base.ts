@@ -40,9 +40,9 @@ export class FormBase {
 
     submitFile(event: { value: File; formControl: any }) {
         const { value, formControl } = event;
-      
-        const vendorId: any = this.localStorage.getToken();
-      
+
+        const vendorId: any = this.localStorage.getVendorId();
+
         if (!value) {
           const documentId = formControl.value.document_id;
         //   if (documentId) {
@@ -55,8 +55,8 @@ export class FormBase {
             console.log('File already uploaded', existingUrl);
             return;
           }
-      
-          this.fileService.getPresignedPutURLOc(nameFile, vendorId, 'register')
+
+          this.fileService.getPresignedPutURLOc(nameFile, vendorId, 'register_secuoya')
           .pipe(
             catchError((error) => {
               if (environment?.stage !== 'local') {
@@ -92,7 +92,7 @@ export class FormBase {
                     if (environment?.stage !== 'local') {
                       formControl.setValue(null, { emitEvent: false });
                       this.globalService.openSnackBar(`Fallo al guardar el documento ${nameFile}`, '', 5000);
-                      this.errorUploadingDocuments = [...this.errorUploadingDocuments, nameFile];     
+                      this.errorUploadingDocuments = [...this.errorUploadingDocuments, nameFile];
                       return throwError(() => new Error('Error al subir el archivo.'));
                     } else {
                       return of({ ...value, url: '' });
@@ -123,7 +123,7 @@ export class FormBase {
 
     // async submitFile(event: { value: File; formControl: AbstractControl }) {
     //     const { value, formControl } = event;
-      
+
     //     const vendorId: any = this.localStorage.getVendorId();
 
     //     const nameFile = this.globalService.normalizeString(value.name);
@@ -170,7 +170,7 @@ export class FormBase {
             if (environment?.stage !== 'local') {
                 formControl.setValue(null, { emitEvent: false });
                 this.globalService.openSnackBar(`Fallo al guardar el documento ${nameFile}`, '', 5000);
-                this.errorUploadingDocuments = [...this.errorUploadingDocuments, nameFile];     
+                this.errorUploadingDocuments = [...this.errorUploadingDocuments, nameFile];
             } else {
                 const loadFile = { ...file, url: '' };
                 console.log(uploadfile)
@@ -183,7 +183,7 @@ export class FormBase {
     async signUrl(uploadFile: any, vendorId: string, nameFile: string, formControl: AbstractControl) {
         if (!uploadFile) return;
         const document_url = uploadFile?.url ? `${vendorId}/${nameFile}` : '';
-        const res: any = await lastValueFrom(this.fileService.signUrl(document_url)); 
+        const res: any = await lastValueFrom(this.fileService.signUrl(document_url));
         formControl.setValue({
             document_id: formControl.value?.document_id,
             name: nameFile,

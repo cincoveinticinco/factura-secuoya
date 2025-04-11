@@ -73,7 +73,6 @@ export class FileboxComponent {
     if (files && files.length > 0) {
       const file = files[0];
       this.value = { file, name: file.name, url: null };
-      this.addDocumentId();
       this.onChange(this.value);
       this.control.setValue(this.value);
     }
@@ -122,15 +121,6 @@ export class FileboxComponent {
 
   changeView(newView: string = '') {
     this.view = newView;
-  }
-
-  addDocumentId() {
-    const ids: any = {
-      'template': DOCUMENT_IDS.TEMPLATE,
-      'invoice': DOCUMENT_IDS.INVOICE,
-      'electronic_invoice': DOCUMENT_IDS.ELECTRONIC_INVOICE
-    }
-    this.value.document_id = ids[this.name];
   }
 
 }

@@ -56,8 +56,9 @@ export class NaturalFormComponent extends FormBase {
     this.getControl('purchaseOrder').patchValue(this.vendor.selectedOrders[0].consecutiveCodes);
     this.setSelectedOrders();
     this.setDocuments();
+    debugger
   }
-  
+
   setSelectedOrders() {
     this.selectedOrders = this.vendor.selectedOrders;
     this.selectedOrders = this.selectedOrders.map(order => ({...order, optionName: order.consecutiveCodes, optionValue: order.consecutiveCodes}))
@@ -92,8 +93,8 @@ export class NaturalFormComponent extends FormBase {
     if (this.getControl('invoice')) {
       params.vendor_documents.push({
         document_type_id: 543,
-        document: this.getControl('template')?.value.document_url,
-        document_id: this.getControl('template')?.value.document_id
+        document: this.getControl('invoice')?.value.document_url,
+        document_id: this.getControl('invoice')?.value.document_id
       });
     }
     return params;
