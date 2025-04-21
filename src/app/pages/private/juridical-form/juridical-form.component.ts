@@ -82,7 +82,7 @@ export class JuridicalFormComponent extends FormBase {
     if (this.getControl('electronic_invoice')) {
       params.vendor_documents.push({
         document_type_id: DOCUMENT_IDS.ELECTRONIC_INVOICE,
-        document: this.getControl('electronic_invoice')?.value?.document_url,
+        document: this.getControl('electronic_invoice')?.value?.document_url || this.getControl('electronic_invoice')?.value.url,
         document_id: this.getControl('electronic_invoice')?.value?.document_id
       });
     }
@@ -93,17 +93,9 @@ export class JuridicalFormComponent extends FormBase {
     const form = this.localStorage.getFormValue() || '';
     const vendor = this.localStorage.getVendor() || '';
 
-    if (vendor.vendor.vendorDocuments.length > 0) {
-      const electronic_invoice = vendor.vendor.vendorDocuments.find(document => document.f_vendor_document_type_id === DOCUMENT_IDS.ELECTRONIC_INVOICE);
-      this.getControl('electronic_invoice').setValue(electronic_invoice.link ? {name: electronic_invoice.link, url: electronic_invoice.link} : null);
-      return;
-    } 
-    if (form.electronic_invoice) {
-      this.getControl('electronic_invoice').setValue(form.electronic_invoice);
-    }
-    if (form.invoice) {
-      this.getControl('invoice').setValue(form.invoice);
-    }
+    const electronic_invoice = vendor.vendor.vendorDocuments.find(document => document.f_vendor_document_type_id === DOCUMENT_IDS.ELECTRONIC_INVOICE);
+    this.getControl('electronic_invoice').setValue(electronic_invoice?.link ? {name: electronic_invoice.link, url: electronic_invoice.link} : form.electronic_invoice);
+
   }
 
 }

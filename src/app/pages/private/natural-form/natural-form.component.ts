@@ -85,14 +85,14 @@ export class NaturalFormComponent extends FormBase {
     if (this.getControl('template')) {
       params.vendor_documents.push({
         document_type_id: DOCUMENT_IDS.TEMPLATE,
-        document: this.getControl('template')?.value.document_url,
+        document: this.getControl('template')?.value.document_url || this.getControl('template')?.value.url,
         document_id: this.getControl('template')?.value.document_id
       });
     }
     if (this.getControl('invoice')) {
       params.vendor_documents.push({
         document_type_id: DOCUMENT_IDS.INVOICE,
-        document: this.getControl('invoice')?.value.document_url,
+        document: this.getControl('invoice')?.value.document_url || this.getControl('invoice')?.value.url,
         document_id: this.getControl('invoice')?.value.document_id
       });
     }
@@ -103,20 +103,10 @@ export class NaturalFormComponent extends FormBase {
     const form = this.localStorage.getFormValue() || '';
     const vendor = this.localStorage.getVendor() || '';
 
-    if (vendor.vendor.vendorDocuments.length > 0) {
-      const invoice = vendor.vendor.vendorDocuments.find(document => document.f_vendor_document_type_id === DOCUMENT_IDS.INVOICE);
-      const template = vendor.vendor.vendorDocuments.find(document => document.f_vendor_document_type_id === DOCUMENT_IDS.TEMPLATE);
-      this.getControl('invoice').setValue(invoice.link ? {name: invoice.link, url: invoice.link} : null);
-      this.getControl('template').setValue(template.link ? {name: template.link, url: template.link} : null);
-      return;
-    } 
-    
-    if (form.template) {
-      this.getControl('template').setValue(form.template);
-    }
-    if (form.invoice) {
-      this.getControl('invoice').setValue(form.invoice);
-    }
+    const invoice = vendor.vendor.vendorDocuments.find(document => document.f_vendor_document_type_id === DOCUMENT_IDS.INVOICE);
+    const template = vendor.vendor.vendorDocuments.find(document => document.f_vendor_document_type_id === DOCUMENT_IDS.TEMPLATE);
+    this.getControl('invoice').setValue(invoice?.link ? {name: invoice.link, url: invoice.link} : form.invoice);
+    this.getControl('template').setValue(template?.link ? {name: template.link, url: template.link} : form.template);
   }
 
 
