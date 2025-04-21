@@ -3,6 +3,7 @@ import { FormControl, FormGroup, ReactiveFormsModule, Validators } from '@angula
 import { FormBase } from '../../../bases/form-base';
 import { FileboxComponent, LogoComponent, OrdersTableComponent, SelectInputComponent, SubtitleComponent, TextInputComponent } from '../../../components';
 import { Order, VendorData } from '../../../interfaces/vendor-data.interface';
+import { DOCUMENT_IDS } from '../../../enums/DOCUMENT_IDS';
 
 @Component({
   selector: 'app-juridical-form',
@@ -80,7 +81,7 @@ export class JuridicalFormComponent extends FormBase {
     const params: any = { vendor_documents: [] };
     if (this.getControl('electronic_invoice')) {
       params.vendor_documents.push({
-        document_type_id: 544,
+        document_type_id: DOCUMENT_IDS.ELECTRONIC_INVOICE,
         document: this.getControl('electronic_invoice')?.value?.document_url,
         document_id: this.getControl('electronic_invoice')?.value?.document_id
       });
@@ -90,7 +91,13 @@ export class JuridicalFormComponent extends FormBase {
 
   setDocuments() {
     const form = this.localStorage.getFormValue() || '';
-    console.log(form)
+    const vendor = this.localStorage.getVendor() || '';
+
+    if (vendor.vendor.vendorDocuments.length > 0) {
+      const electronic_invoice = vendor.vendor.vendorDocuments.find(document => document.f_vendor_document_type_id === DOCUMENT_IDS.ELECTRONIC_INVOICE);
+      this.getControl('electronic_invoice').setValue(electronic_invoice.link ? {name: electronic_invoice.link, url: electronic_invoice.link} : null);
+      return;
+    } 
     if (form.electronic_invoice) {
       this.getControl('electronic_invoice').setValue(form.electronic_invoice);
     }

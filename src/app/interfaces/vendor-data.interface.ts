@@ -78,7 +78,7 @@ export interface Vendor {
     voluntaryPensionEntity:        null;
     voluntaryPensionAccountNumber: null;
     voluntaryPensionValue:         null;
-    vendorDocuments:               null;
+    vendorDocuments:               any[];
     infoAdditional:                null;
     dependentsInfo:                any[];
     signature:                     null;

@@ -46,6 +46,16 @@ export class AuthService {
         )
     }
 
+    authenticateUserWithRegisterId(registerId: string) {
+        const params = {
+          register_id: registerId
+        }
+    
+        return this.http.get(`${environment.apiUrl}cmo/authenticate_oc_user`, {
+          params
+        });
+      }
+
     logOut() {
         this.route.params.subscribe((params: any) => {
             localStorage.clear();

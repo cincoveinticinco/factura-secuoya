@@ -113,8 +113,8 @@ export class InvoiceLoginComponent extends FormBase {
     this.loading = true;
     try {
       const vendor = await lastValueFrom(this.infoService.getFormInitialData());
-      this.navigateTo(vendor.fPersonTypeId, vendor.vendor.id);
       this.localStorage.setVendor(vendor);
+      this.navigateTo(vendor.fPersonTypeId, vendor.vendor.id);
       this.loading = false;
     } catch (error: any) {
       if(error && error.status === 401) {

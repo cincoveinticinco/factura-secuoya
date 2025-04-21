@@ -3,7 +3,7 @@ import { LogoComponent, TextInputComponent, OrdersTableComponent, FileboxCompone
 import { FormBase } from '../../../bases/form-base';
 import { FormControl, FormGroup, ReactiveFormsModule, Validators } from '@angular/forms';
 import { Order, VendorData } from '../../../interfaces/vendor-data.interface';
-import { lastValueFrom } from 'rxjs';
+import { DOCUMENT_IDS } from '../../../enums/DOCUMENT_IDS';
 
 @Component({
   selector: 'app-natural-form',
@@ -41,7 +41,7 @@ export class NaturalFormComponent extends FormBase {
     super(form);
   }
 
-  ngOnInit() {
+  async ngOnInit() {
     this.setForm();
   }
 
@@ -84,14 +84,14 @@ export class NaturalFormComponent extends FormBase {
     const params: any = { vendor_documents: [] };
     if (this.getControl('template')) {
       params.vendor_documents.push({
-        document_type_id: 527,
+        document_type_id: DOCUMENT_IDS.TEMPLATE,
         document: this.getControl('template')?.value.document_url,
         document_id: this.getControl('template')?.value.document_id
       });
     }
     if (this.getControl('invoice')) {
       params.vendor_documents.push({
-        document_type_id: 543,
+        document_type_id: DOCUMENT_IDS.INVOICE,
         document: this.getControl('invoice')?.value.document_url,
         document_id: this.getControl('invoice')?.value.document_id
       });
@@ -101,6 +101,16 @@ export class NaturalFormComponent extends FormBase {
 
   setDocuments() {
     const form = this.localStorage.getFormValue() || '';
+    const vendor = this.localStorage.getVendor() || '';
+
+    if (vendor.vendor.vendorDocuments.length > 0) {
+      const invoice = vendor.vendor.vendorDocuments.find(document => document.f_vendor_document_type_id === DOCUMENT_IDS.INVOICE);
+      const template = vendor.vendor.vendorDocuments.find(document => document.f_vendor_document_type_id === DOCUMENT_IDS.TEMPLATE);
+      this.getControl('invoice').setValue(invoice.link ? {name: invoice.link, url: invoice.link} : null);
+      this.getControl('template').setValue(template.link ? {name: template.link, url: template.link} : null);
+      return;
+    } 
+    
     if (form.template) {
       this.getControl('template').setValue(form.template);
     }

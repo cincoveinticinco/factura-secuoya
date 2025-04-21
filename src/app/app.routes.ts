@@ -7,6 +7,7 @@ import { ErrorComponent } from './pages/error/error.component';
 import { PoOrdersComponent } from './pages/private/po-orders/po-orders.component';
 import { authGuard } from './guards/auth.guard';
 import { SentComponent } from './private/sent/sent.component';
+import { ValidateOcInfoComponent } from './pages/validate-oc-info/validate-oc-info.component';
 
 export const routes: Routes = [
     {
@@ -39,5 +40,9 @@ export const routes: Routes = [
     {
         path: 'error',
         component: ErrorComponent
-    }
+    },
+    {
+        path: ':registerId',
+        component: ValidateOcInfoComponent
+    },
 ];

@@ -46,7 +46,7 @@ export class SentComponent {
           document
         });
       } else {
-        this.router.navigate(['/oc-error']);
+        this.router.navigate(['/error']);
       }
     });
   }
