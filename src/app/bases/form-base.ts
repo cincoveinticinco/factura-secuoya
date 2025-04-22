@@ -5,6 +5,7 @@ import { Router } from "@angular/router";
 import { catchError, last, lastValueFrom, map, of, switchMap, throwError } from "rxjs";
 import { environment } from "../../environments/environment";
 import { HttpEventType } from "@angular/common/http";
+import { DOCUMENT_IDS } from "../enums/DOCUMENT_IDS";
 
 export class FormBase {
 
@@ -198,13 +199,24 @@ export class FormBase {
     }
 
     validateFiles(controls: string[]) {
-        for (const control of controls) {
-            if (!this.getControl(control).value) {
-                this.hasError = true;
-                break;
-            }
-            this.hasError = false;
-        }
+      const ids: any = {
+        'invoice': DOCUMENT_IDS.INVOICE,
+        'electronic_invoice': DOCUMENT_IDS.ELECTRONIC_INVOICE,
+        'template': DOCUMENT_IDS.TEMPLATE,
+      }
+      const { vendor } = this.localStorage.getVendor();
+      for (const control of controls) {
+          const document = vendor?.vendorDocuments?.find(document => document.f_vendor_document_type_id === ids[control]);
+          if (document) {
+            this.getControl(control).setValue({...this.getControl(control).value, document_id: document.document_id});
+          }
+          if (!this.getControl(control).value) {
+              this.hasError = true;
+              break;
+          }
+          this.hasError = false;
+          console.log(this.getControl(control))
+      }
     }
 
 }

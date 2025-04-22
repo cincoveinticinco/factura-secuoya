@@ -93,8 +93,8 @@ export class JuridicalFormComponent extends FormBase {
     const form = this.localStorage.getFormValue() || '';
     const vendor = this.localStorage.getVendor() || '';
 
-    const electronic_invoice = vendor.vendor.vendorDocuments.find(document => document.f_vendor_document_type_id === DOCUMENT_IDS.ELECTRONIC_INVOICE);
-    this.getControl('electronic_invoice').setValue(electronic_invoice?.link ? {name: electronic_invoice.link, url: electronic_invoice.link} : form.electronic_invoice);
+    const electronic_invoice = vendor.vendor.vendorDocuments?.find(document => document.f_vendor_document_type_id === DOCUMENT_IDS.ELECTRONIC_INVOICE);
+    this.getControl('electronic_invoice').setValue(electronic_invoice?.link ? {name: electronic_invoice.link, url: electronic_invoice.link, document_id: electronic_invoice.document_id} : form.electronic_invoice);
 
   }
 

@@ -103,10 +103,10 @@ export class NaturalFormComponent extends FormBase {
     const form = this.localStorage.getFormValue() || '';
     const vendor = this.localStorage.getVendor() || '';
 
-    const invoice = vendor.vendor.vendorDocuments.find(document => document.f_vendor_document_type_id === DOCUMENT_IDS.INVOICE);
-    const template = vendor.vendor.vendorDocuments.find(document => document.f_vendor_document_type_id === DOCUMENT_IDS.TEMPLATE);
-    this.getControl('invoice').setValue(invoice?.link ? {name: invoice.link, url: invoice.link} : form.invoice);
-    this.getControl('template').setValue(template?.link ? {name: template.link, url: template.link} : form.template);
+    const invoice = vendor?.vendor?.vendorDocuments?.find(document => document.f_vendor_document_type_id === DOCUMENT_IDS.INVOICE);
+    const template = vendor?.vendor?.vendorDocuments?.find(document => document.f_vendor_document_type_id === DOCUMENT_IDS.TEMPLATE);
+    this.getControl('invoice').setValue(invoice?.link ? {name: invoice.link, url: invoice.link, document_id: invoice.document_id} : form.invoice);
+    this.getControl('template').setValue(template?.link ? {name: template.link, url: template.link, document_id: template.document_id} : form.template);
   }
 
 
