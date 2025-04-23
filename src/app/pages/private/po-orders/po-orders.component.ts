@@ -34,8 +34,10 @@ export class PoOrdersComponent {
 
   async save() {
     this.disabled = true;
+    const vendor = this.localStorage.getVendor();
     const params = this.localStorage.getParams();
-    params.selected_orders = [ this.localStorage.getVendor().selectedOrders[0].id.toString() ]
+    params.selected_orders = [ this.localStorage.getVendor().selectedOrders[0].id.toString() ];
+    if (vendor.registerCode) params.consecutive_number = +vendor.registerCode;
     const radicateInfo = await lastValueFrom(this.infoService.updateRegisterVendor(params));
     localStorage.clear();
     this.localStorage.setRadicadoInfo(radicateInfo);
