@@ -29,7 +29,6 @@ export class FileService {
 
     uploadFileUrlPresigned(file: any, uploadUrl: string, contentType:string): Observable<any> {
 		const headers = new HttpHeaders({'Content-Type': contentType, 'Accept': '*/*'});
-        console.log(file)
 		const req = new HttpRequest(
 			'PUT', uploadUrl, file, {
 			headers: headers

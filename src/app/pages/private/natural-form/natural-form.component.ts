@@ -1,7 +1,7 @@
 import { Component } from '@angular/core';
 import { LogoComponent, TextInputComponent, OrdersTableComponent, FileboxComponent, SubtitleComponent, SelectInputComponent } from '../../../components';
 import { FormBase } from '../../../bases/form-base';
-import { FormControl, FormGroup, ReactiveFormsModule, Validators } from '@angular/forms';
+import { FormArray, FormControl, FormGroup, ReactiveFormsModule, Validators } from '@angular/forms';
 import { Order, VendorData } from '../../../interfaces/vendor-data.interface';
 import { DOCUMENT_IDS } from '../../../enums/DOCUMENT_IDS';
 
@@ -24,6 +24,9 @@ export class NaturalFormComponent extends FormBase {
   loading = false;
   vendor!: VendorData;
   selectedOrders!: Order[];
+  get other_anexos() {
+    return this.getControl('other_anexos') as FormArray;
+  }
 
   constructor() {
     const form = new FormGroup({
@@ -36,6 +39,7 @@ export class NaturalFormComponent extends FormBase {
       email: new FormControl({value:'', disabled: true}, Validators.required),
       template: new FormControl({value:'', disabled: true}, Validators.required),
       invoice: new FormControl({value:'', disabled: true}, Validators.required),
+      other_anexos: new FormArray([]),
     });
 
     super(form);
@@ -64,7 +68,7 @@ export class NaturalFormComponent extends FormBase {
   }
 
   async onSubmit() {
-    this.validateFiles(['template', 'invoice']);
+    this.validateFiles(['template', 'invoice', 'other_anexos']);
     if (this.hasError) {
       return;
     }
@@ -73,8 +77,13 @@ export class NaturalFormComponent extends FormBase {
 
     this.errorUploadingDocuments = [];
     await this.uploadFiles(['template', 'invoice']);
+
+    if (this.other_anexos.value.length > 0) {
+      await this.uploadFilesFromArrayOfControls(this.other_anexos);
+    }
+
     const params = this.setDocumentIds();
-    this.localStorage.setFormValue(this.parentForm.value);
+    this.localStorage.setFormValue(this.parentForm.getRawValue());
     this.localStorage.setParams(params);
     this.router.navigate(['po-orders']);
     this.loading = false;
@@ -96,6 +105,15 @@ export class NaturalFormComponent extends FormBase {
         document_id: this.getControl('invoice')?.value.document_id
       });
     }
+    if (this.other_anexos.value.length > 0) {
+      for (const anexo of this.other_anexos.value) {
+        params.vendor_documents.push({
+          document_type_id: DOCUMENT_IDS.ANEX,
+          document: anexo.document_url || anexo.url,
+          document_id: anexo.document_id
+        });
+      }
+    }
     return params;
   }
 
@@ -105,8 +123,27 @@ export class NaturalFormComponent extends FormBase {
 
     const invoice = vendor?.vendor?.vendorDocuments?.find(document => document.f_vendor_document_type_id === DOCUMENT_IDS.INVOICE);
     const template = vendor?.vendor?.vendorDocuments?.find(document => document.f_vendor_document_type_id === DOCUMENT_IDS.TEMPLATE);
+    const anexos = vendor?.vendor?.vendorDocuments?.filter(document => document.f_vendor_document_type_id === DOCUMENT_IDS.ANEX);
     this.getControl('invoice').setValue(invoice?.link ? {name: invoice.link, url: invoice.link, document_id: invoice.document_id} : form.invoice);
     this.getControl('template').setValue(template?.link ? {name: template.link, url: template.link, document_id: template.document_id} : form.template);
+
+    const other_anexos = anexos?.length > 0 ? anexos : form.other_anexos;
+
+    if (other_anexos?.length > 0) {
+      for (const anexo of other_anexos) {
+        const other_anexo = anexo?.link ? {name: anexo.link, url: anexo.link, document_id: anexo.document_id} : (anexo.document_id ? null : anexo );
+        this.addNewAnexFormGroup(other_anexo);
+      }
+    }
+  }
+
+
+  addNewAnexFormGroup(anexo?: any) {
+    this.other_anexos.push(new FormControl(anexo || ''));
+  }
+
+  deleteAnnex(index: number) {
+    this.other_anexos.removeAt(index);
   }
 
 

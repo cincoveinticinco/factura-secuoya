@@ -1,5 +1,5 @@
 import { Component } from '@angular/core';
-import { FormControl, FormGroup, ReactiveFormsModule, Validators } from '@angular/forms';
+import { FormArray, FormControl, FormGroup, ReactiveFormsModule, Validators } from '@angular/forms';
 import { FormBase } from '../../../bases/form-base';
 import { FileboxComponent, LogoComponent, OrdersTableComponent, SelectInputComponent, SubtitleComponent, TextInputComponent } from '../../../components';
 import { Order, VendorData } from '../../../interfaces/vendor-data.interface';
@@ -24,6 +24,9 @@ export class JuridicalFormComponent extends FormBase {
   loading = false;
   vendor!: VendorData;
   selectedOrders!: Order[];
+  get other_anexos() {
+    return this.getControl('other_anexos') as FormArray;
+  }
 
   constructor() {
     const form = new FormGroup({
@@ -35,6 +38,7 @@ export class JuridicalFormComponent extends FormBase {
       address: new FormControl({value:'', disabled: true}, Validators.required),
       email: new FormControl({value:'', disabled: true}, Validators.required),
       electronic_invoice: new FormControl({value:'', disabled: true}, Validators.required),
+      other_anexos: new FormArray([]),
     });
 
     super(form);
@@ -63,13 +67,18 @@ export class JuridicalFormComponent extends FormBase {
   }
 
   async onSubmit() {
-    this.validateFiles(['electronic_invoice']);
+    this.validateFiles(['electronic_invoice', 'other_anexos']);
     if (this.hasError) {
       return;
     }
     this.loading = true;
     this.errorUploadingDocuments = [];
     await this.uploadFiles(['electronic_invoice']);
+
+    if (this.other_anexos.value.length > 0) {
+      await this.uploadFilesFromArrayOfControls(this.other_anexos);
+    }
+
     const params = this.setDocumentIds();
     this.localStorage.setFormValue(this.parentForm.value);
     this.localStorage.setParams(params);
@@ -86,6 +95,15 @@ export class JuridicalFormComponent extends FormBase {
         document_id: this.getControl('electronic_invoice')?.value?.document_id
       });
     }
+    if (this.other_anexos.value.length > 0) {
+      for (const anexo of this.other_anexos.value) {
+        params.vendor_documents.push({
+          document_type_id: DOCUMENT_IDS.ANEX,
+          document: anexo.document_url || anexo.url,
+          document_id: anexo.document_id
+        });
+      }
+    }
     return params;
   }
 
@@ -94,8 +112,25 @@ export class JuridicalFormComponent extends FormBase {
     const vendor = this.localStorage.getVendor() || '';
 
     const electronic_invoice = vendor.vendor.vendorDocuments?.find(document => document.f_vendor_document_type_id === DOCUMENT_IDS.ELECTRONIC_INVOICE);
+    const anexos = vendor?.vendor?.vendorDocuments?.filter(document => document.f_vendor_document_type_id === DOCUMENT_IDS.ANEX);
     this.getControl('electronic_invoice').setValue(electronic_invoice?.link ? {name: electronic_invoice.link, url: electronic_invoice.link, document_id: electronic_invoice.document_id} : form.electronic_invoice);
 
+    const other_anexos = anexos?.length > 0 ? anexos : form.other_anexos;
+
+    if (other_anexos?.length > 0) {
+      for (const anexo of other_anexos) {
+        const other_anexo = anexo?.link ? {name: anexo.link, url: anexo.link, document_id: anexo.document_id} : (anexo.document_id ? null : anexo );
+        this.addNewAnexFormGroup(other_anexo);
+      }
+    }
+  }
+
+  addNewAnexFormGroup(anexo?: any) {
+    this.other_anexos.push(new FormControl(anexo || ''));
+  }
+
+  deleteAnnex(index: number) {
+    this.other_anexos.removeAt(index);
   }
 
 }

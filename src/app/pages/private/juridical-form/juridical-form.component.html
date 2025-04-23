@@ -73,6 +73,19 @@
             <app-filebox [control]="getControl('electronic_invoice')" name="electronic_invoice" (onChanges)="validateFiles(['electronic_invoice'])"></app-filebox>
             <!-- / REQUIRED FILES -->
 
+            @for(anexo of other_anexos.controls; track $index) {
+              <div class="anexo-container">
+                <button type="button" class="delete-button delete-button-anexo" (click)="deleteAnnex($index)">
+                  <span class="material-symbols-outlined">
+                    delete
+                  </span>
+                </button>
+                <label>Otros Anexos</label>
+                <app-filebox [control]="anexo" [id]="'otherAnexes-' + $index" (onChanges)="validateFiles(['template', 'invoice', 'other_anexos'])"></app-filebox>
+              </div>
+            }
+            <a (click)="addNewAnexFormGroup()">+ Agregar anexo</a>
+
             @if (hasError) {
               <div class="error-container">
                 <span class="error-message"> Debe subir los archivos </span>

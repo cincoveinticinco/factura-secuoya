@@ -1,4 +1,4 @@
-import { AbstractControl, FormGroup } from "@angular/forms";
+import { AbstractControl, FormArray, FormControl, FormGroup } from "@angular/forms";
 import { FileService, GlobalService, InfoService, LocalStorageService } from "../services";
 import { inject } from "@angular/core";
 import { Router } from "@angular/router";
@@ -37,6 +37,16 @@ export class FormBase {
             await this.sleep(3000); // Delay de 1 segundo entre subidas
           }
         }
+    }
+
+    async uploadFilesFromArrayOfControls(controlArray: FormArray): Promise<void> {
+      for (const control of controlArray.controls) {
+        const file = control.value?.file;
+        if (file) {
+          await this.submitFile({ value: file, formControl: control as FormControl });
+          await this.sleep(3000);
+        }
+      }
     }
 
     submitFile(event: { value: File; formControl: any }) {
@@ -199,23 +209,40 @@ export class FormBase {
     }
 
     validateFiles(controls: string[]) {
+      for (const control of controls) {
+        this.setControls(control);
+        if (!this.getControl(control).value) {
+          this.hasError = true;
+          break;
+        }
+        this.hasError = false;
+      }
+    }
+    
+    setControls(control: string) {
+      const { vendor } = this.localStorage.getVendor();
       const ids: any = {
         'invoice': DOCUMENT_IDS.INVOICE,
         'electronic_invoice': DOCUMENT_IDS.ELECTRONIC_INVOICE,
         'template': DOCUMENT_IDS.TEMPLATE,
+        'other_anexos': DOCUMENT_IDS.ANEX,
       }
-      const { vendor } = this.localStorage.getVendor();
-      for (const control of controls) {
-          const document = vendor?.vendorDocuments?.find(document => document.f_vendor_document_type_id === ids[control]);
-          if (document) {
-            this.getControl(control).setValue({...this.getControl(control).value, document_id: document.document_id});
-          }
-          if (!this.getControl(control).value) {
-              this.hasError = true;
-              break;
-          }
-          this.hasError = false;
-          console.log(this.getControl(control))
+      const documents = vendor?.vendorDocuments?.filter(document => document.f_vendor_document_type_id === ids[control]);
+
+      if (!documents || documents?.length === 0) {
+        return;
+      }
+
+      if (this.getControl(control).value.length > 0) {
+        const array = this.getControl(control) as FormArray;
+        for (const document of documents) {
+          const controlWithoutDocumentId = array.controls.find(control => !control.value.document_id);
+          if (array.getRawValue().some(value => value.document_id === document.document_id)) continue;
+          if (!controlWithoutDocumentId?.value.name) continue;
+          controlWithoutDocumentId.setValue({...controlWithoutDocumentId.value, document_id: document.document_id});
+        }
+      } else {
+        this.getControl(control).setValue({...this.getControl(control).value, document_id: documents[0].document_id});
       }
     }
 
