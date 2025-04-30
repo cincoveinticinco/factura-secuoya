@@ -16,11 +16,12 @@ export class PoOrdersComponent {
   localStorage = inject(LocalStorageService);
   infoService = inject(InfoService);
   disabled = false;
+  errorMsg = '';
+  loading = false;
 
   constructor(
     private router: Router
   ) {
-    
   }
 
   back() {
@@ -34,11 +35,20 @@ export class PoOrdersComponent {
 
   async save() {
     this.disabled = true;
+    this.loading = true;
+
     const vendor = this.localStorage.getVendor();
     const params = this.localStorage.getParams();
     params.selected_orders = [ this.localStorage.getVendor().selectedOrders[0].id.toString() ];
     if (vendor.registerCode) params.consecutive_number = +vendor.registerCode;
-    const radicateInfo = await lastValueFrom(this.infoService.updateRegisterVendor(params));
+    const radicateInfo: any = await lastValueFrom(this.infoService.updateRegisterVendor(params));
+
+    if (radicateInfo?.error) {
+      this.disabled = false;
+      this.loading = false;
+      this.errorMsg = radicateInfo?.msg;
+      return;
+    }
     localStorage.clear();
     this.localStorage.setRadicadoInfo(radicateInfo);
     this.router.navigate(['thanks']);

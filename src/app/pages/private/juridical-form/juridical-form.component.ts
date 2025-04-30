@@ -30,14 +30,14 @@ export class JuridicalFormComponent extends FormBase {
 
   constructor() {
     const form = new FormGroup({
-      purchaseOrder: new FormControl({value:'', disabled: true}, Validators.required),
-      personType: new FormControl({value:'', disabled: true}, Validators.required),
-      documentType: new FormControl({value:'', disabled: true}, Validators.required),
-      documentNumber: new FormControl({value:'', disabled: true}, Validators.required),
-      companyName: new FormControl({value:'', disabled: true}, Validators.required),
-      address: new FormControl({value:'', disabled: true}, Validators.required),
-      email: new FormControl({value:'', disabled: true}, Validators.required),
-      electronic_invoice: new FormControl({value:'', disabled: true}, Validators.required),
+      purchaseOrder: new FormControl({ value: '', disabled: true }, Validators.required),
+      personType: new FormControl({ value: '', disabled: true }, Validators.required),
+      documentType: new FormControl({ value: '', disabled: true }, Validators.required),
+      documentNumber: new FormControl({ value: '', disabled: true }, Validators.required),
+      companyName: new FormControl({ value: '', disabled: true }, Validators.required),
+      address: new FormControl({ value: '', disabled: true }, Validators.required),
+      email: new FormControl({ value: '', disabled: true }, Validators.required),
+      electronic_invoice: new FormControl({ value: '', disabled: true }, Validators.required),
       other_anexos: new FormArray([]),
     });
 
@@ -60,30 +60,36 @@ export class JuridicalFormComponent extends FormBase {
     this.setSelectedOrders();
     this.setDocuments();
   }
-  
+
   setSelectedOrders() {
     this.selectedOrders = this.vendor.selectedOrders;
-    this.selectedOrders = this.selectedOrders.map(order => ({...order, optionName: order.consecutiveCodes, optionValue: order.consecutiveCodes}))
+    this.selectedOrders = this.selectedOrders.map(order => ({ ...order, optionName: order.consecutiveCodes, optionValue: order.consecutiveCodes }))
   }
 
   async onSubmit() {
     this.validateFiles(['electronic_invoice', 'other_anexos']);
-    if (this.hasError) {
-      return;
-    }
+    if (this.hasError) return;
+
     this.loading = true;
     this.errorUploadingDocuments = [];
-    await this.uploadFiles(['electronic_invoice']);
 
-    if (this.other_anexos.value.length > 0) {
-      await this.uploadFilesFromArrayOfControls(this.other_anexos);
+    try {
+      await this.uploadFiles(['electronic_invoice']);
+
+      if (this.other_anexos.value.length > 0) {
+        await this.uploadFilesFromArrayOfControls(this.other_anexos);
+      }
+
+      const params = this.setDocumentIds();
+      this.localStorage.setFormValue(this.parentForm.value);
+      this.localStorage.setParams(params);
+      this.router.navigate(['po-orders']);
+    } catch (error) {
+      console.error('Error durante envío:', error);
+      this.globalService.openSnackBar('Error al enviar el formulario', '', 5000);
+    } finally {
+      this.loading = false;
     }
-
-    const params = this.setDocumentIds();
-    this.localStorage.setFormValue(this.parentForm.value);
-    this.localStorage.setParams(params);
-    this.router.navigate(['po-orders']);
-    this.loading = false;
   }
 
   setDocumentIds() {
@@ -113,13 +119,13 @@ export class JuridicalFormComponent extends FormBase {
 
     const electronic_invoice = vendor.vendor.vendorDocuments?.find(document => document.f_vendor_document_type_id === DOCUMENT_IDS.ELECTRONIC_INVOICE);
     const anexos = vendor?.vendor?.vendorDocuments?.filter(document => document.f_vendor_document_type_id === DOCUMENT_IDS.ANEX);
-    this.getControl('electronic_invoice').setValue(electronic_invoice?.link ? {name: electronic_invoice.link, url: electronic_invoice.link, document_id: electronic_invoice.document_id} : form.electronic_invoice);
+    this.getControl('electronic_invoice').setValue(electronic_invoice?.link ? { name: electronic_invoice.link, url: electronic_invoice.link, document_id: electronic_invoice.document_id } : form.electronic_invoice);
 
     const other_anexos = anexos?.length > 0 ? anexos : form.other_anexos;
 
     if (other_anexos?.length > 0) {
       for (const anexo of other_anexos) {
-        const other_anexo = anexo?.link ? {name: anexo.link, url: anexo.link, document_id: anexo.document_id} : (anexo.document_id ? null : anexo );
+        const other_anexo = anexo?.link ? { name: anexo.link, url: anexo.link, document_id: anexo.document_id } : (anexo.document_id ? null : anexo);
         this.addNewAnexFormGroup(other_anexo);
       }
     }

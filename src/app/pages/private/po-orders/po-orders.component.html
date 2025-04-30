@@ -1,18 +1,42 @@
-<div class="full-screen">
+@if(loading){
+  <div class="loader">
+      <div class="custom-loader"></div>
+  </div>
+} @else {
+  <div class="full-screen">
     <div class="form-container">
       <h1 class="form-title">CONFIRMACIÓN DE RADICACIÓN</h1>
-  
+
       <div class="row">
         <p class="col-12">
           Las siguientes ordenes de compra serán radicadas:
         </p>
       </div>
-  
+
       <app-orders-table></app-orders-table>
-  
+
       <div class="row margin-top buttons-wrapper">
         <button mat-raised-button type="button" class="col-6 btn-gray" (click)="back()">REGRESAR</button>
         <button mat-raised-button type="submit" class="col-6 btn-red" (click)="save()" [disabled]="disabled">CONTINUAR</button>
       </div>
     </div>
   </div>
+
+  @if (errorMsg) {
+    <div class="full-screen">
+      <div class="form-container" style="text-align: center;">
+        <h1 class="form-title">Error al guardar el formulario</h1>
+
+        <div class="row">
+          <p class="col-12" style="text-align: center;">
+            {{ errorMsg }}
+          </p>
+        </div>
+
+        <div class="margin-top buttons-wrapper">
+          <button mat-raised-button type="button" class="col-6 btn-gray" (click)="back()">REGRESAR</button>
+        </div>
+      </div>
+    </div>
+  }
+}

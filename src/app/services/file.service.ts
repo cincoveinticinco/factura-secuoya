@@ -1,24 +1,20 @@
 import { HttpClient, HttpHeaders, HttpRequest } from '@angular/common/http';
-import { inject, Injectable } from '@angular/core';
+import { Injectable } from '@angular/core';
 import { environment } from '../../environments/environment';
 import { map, Observable, tap } from 'rxjs';
 import { ActivatedRoute } from '@angular/router';
-import { LocalStorageService } from './local-storage.service';
 
 @Injectable({
 providedIn: 'root'
 })
 export class FileService {
 
-    private loginApiUrl: string = environment.apiUrlFront;
-    private localStorage = inject(LocalStorageService);
-
     constructor(
         private http: HttpClient,
         private route: ActivatedRoute
     ) { }
 
-    getPresignedPutURLOc(filename: string, vendor_id: string, folder?: string ) {
+    getPresignedPutURLOc(filename: string, vendor_id: string, folder?: string ): Observable<any> {
         let params = {
             'filename': filename,
             'vendor_id': vendor_id,

@@ -30,15 +30,15 @@ export class NaturalFormComponent extends FormBase {
 
   constructor() {
     const form = new FormGroup({
-      purchaseOrder: new FormControl({value:'', disabled: true}, Validators.required),
-      personType: new FormControl({value:'', disabled: true}, Validators.required),
-      documentType: new FormControl({value:'', disabled: true}, Validators.required),
-      documentNumber: new FormControl({value:'', disabled: true}, Validators.required),
-      companyName: new FormControl({value:'', disabled: true}, Validators.required),
-      address: new FormControl({value:'', disabled: true}, Validators.required),
-      email: new FormControl({value:'', disabled: true}, Validators.required),
-      template: new FormControl({value:'', disabled: true}, Validators.required),
-      invoice: new FormControl({value:'', disabled: true}, Validators.required),
+      purchaseOrder: new FormControl({ value: '', disabled: true }, Validators.required),
+      personType: new FormControl({ value: '', disabled: true }, Validators.required),
+      documentType: new FormControl({ value: '', disabled: true }, Validators.required),
+      documentNumber: new FormControl({ value: '', disabled: true }, Validators.required),
+      companyName: new FormControl({ value: '', disabled: true }, Validators.required),
+      address: new FormControl({ value: '', disabled: true }, Validators.required),
+      email: new FormControl({ value: '', disabled: true }, Validators.required),
+      template: new FormControl({ value: '', disabled: true }, Validators.required),
+      invoice: new FormControl({ value: '', disabled: true }, Validators.required),
       other_anexos: new FormArray([]),
     });
 
@@ -64,29 +64,33 @@ export class NaturalFormComponent extends FormBase {
 
   setSelectedOrders() {
     this.selectedOrders = this.vendor.selectedOrders;
-    this.selectedOrders = this.selectedOrders.map(order => ({...order, optionName: order.consecutiveCodes, optionValue: order.consecutiveCodes}))
+    this.selectedOrders = this.selectedOrders.map(order => ({ ...order, optionName: order.consecutiveCodes, optionValue: order.consecutiveCodes }))
   }
 
   async onSubmit() {
     this.validateFiles(['template', 'invoice', 'other_anexos']);
-    if (this.hasError) {
-      return;
-    }
+    if (this.hasError) return;
 
     this.loading = true;
-
     this.errorUploadingDocuments = [];
-    await this.uploadFiles(['template', 'invoice']);
 
-    if (this.other_anexos.value.length > 0) {
-      await this.uploadFilesFromArrayOfControls(this.other_anexos);
+    try {
+      await this.uploadFiles(['template', 'invoice']);
+
+      if (this.other_anexos.value.length > 0) {
+        await this.uploadFilesFromArrayOfControls(this.other_anexos);
+      }
+
+      const params = this.setDocumentIds();
+      this.localStorage.setFormValue(this.parentForm.getRawValue());
+      this.localStorage.setParams(params);
+      this.router.navigate(['po-orders']);
+    } catch (error) {
+      console.error('Error durante envío:', error);
+      this.globalService.openSnackBar('Error al enviar el formulario', '', 5000);
+    } finally {
+      this.loading = false;
     }
-
-    const params = this.setDocumentIds();
-    this.localStorage.setFormValue(this.parentForm.getRawValue());
-    this.localStorage.setParams(params);
-    this.router.navigate(['po-orders']);
-    this.loading = false;
   }
 
   setDocumentIds() {
@@ -124,14 +128,14 @@ export class NaturalFormComponent extends FormBase {
     const invoice = vendor?.vendor?.vendorDocuments?.find(document => document.f_vendor_document_type_id === DOCUMENT_IDS.INVOICE);
     const template = vendor?.vendor?.vendorDocuments?.find(document => document.f_vendor_document_type_id === DOCUMENT_IDS.TEMPLATE);
     const anexos = vendor?.vendor?.vendorDocuments?.filter(document => document.f_vendor_document_type_id === DOCUMENT_IDS.ANEX);
-    this.getControl('invoice').setValue(invoice?.link ? {name: invoice.link, url: invoice.link, document_id: invoice.document_id} : form.invoice);
-    this.getControl('template').setValue(template?.link ? {name: template.link, url: template.link, document_id: template.document_id} : form.template);
+    this.getControl('invoice').setValue(invoice?.link ? { name: invoice.link, url: invoice.link, document_id: invoice.document_id } : form.invoice);
+    this.getControl('template').setValue(template?.link ? { name: template.link, url: template.link, document_id: template.document_id } : form.template);
 
     const other_anexos = anexos?.length > 0 ? anexos : form.other_anexos;
 
     if (other_anexos?.length > 0) {
       for (const anexo of other_anexos) {
-        const other_anexo = anexo?.link ? {name: anexo.link, url: anexo.link, document_id: anexo.document_id} : (anexo.document_id ? null : anexo );
+        const other_anexo = anexo?.link ? { name: anexo.link, url: anexo.link, document_id: anexo.document_id } : (anexo.document_id ? null : anexo);
         this.addNewAnexFormGroup(other_anexo);
       }
     }
