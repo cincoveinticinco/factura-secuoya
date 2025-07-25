@@ -69,7 +69,7 @@ export class InvoiceLoginComponent extends FormBase {
   }
 
   getDocumentPattern() {
-    return this.getControl('personType').value === PERSON_TYPE.Natural && this.getControl('documentType')?.value != DOCUMENT_TYPE.CE ? '^[0-9]*$' : '^[a-zA-Z0-9]+$';
+    return this.getControl('personType').value === PERSON_TYPE.Natural && this.getControl('documentType')?.value != DOCUMENT_TYPE.CE && this.getControl('documentType')?.value != DOCUMENT_TYPE.PASAPORTE ? '^[0-9]*$' : '^[a-zA-Z0-9]+$';
   }
 
   filterDocumentTypes(typePersonId: PERSON_TYPE) {
